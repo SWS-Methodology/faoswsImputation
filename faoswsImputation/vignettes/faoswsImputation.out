@@ -1,0 +1,19 @@
+\BOOKMARK [1][-]{Section.0.Setup.1}{Setup}{}% 1
+\BOOKMARK [1][-]{Section.1.Functions.1}{Functions}{}% 2
+\BOOKMARK [2][-]{Subsection.2.0.Data processing.2}{Data processing}{Section.1.Functions.1}% 3
+\BOOKMARK [2][-]{Subsection.2.1.Imputation.2}{Imputation}{Section.1.Functions.1}% 4
+\BOOKMARK [1][-]{Section.2.Ensemble model.1}{Ensemble model}{}% 5
+\BOOKMARK [1][-]{Section.3.Models for Ensembling.1}{Models for Ensembling}{}% 6
+\BOOKMARK [2][-]{Subsection.4.0.defaultArima.2}{defaultArima}{Section.3.Models for Ensembling.1}% 7
+\BOOKMARK [2][-]{Subsection.4.1.defaultExp.2}{defaultExp}{Section.3.Models for Ensembling.1}% 8
+\BOOKMARK [2][-]{Subsection.4.2.defaultGlobalMean.2}{defaultGlobalMean}{Section.3.Models for Ensembling.1}% 9
+\BOOKMARK [2][-]{Subsection.4.3.defaultGlobalMedian.2}{defaultGlobalMedian}{Section.3.Models for Ensembling.1}% 10
+\BOOKMARK [2][-]{Subsection.4.4.defaultLm.2}{defaultLm}{Section.3.Models for Ensembling.1}% 11
+\BOOKMARK [2][-]{Subsection.4.5.defaultLoess.2}{defaultLoess}{Section.3.Models for Ensembling.1}% 12
+\BOOKMARK [2][-]{Subsection.4.6.defaultLogistic.2}{defaultLogistic}{Section.3.Models for Ensembling.1}% 13
+\BOOKMARK [2][-]{Subsection.4.7.defaultMars.2}{defaultMars}{Section.3.Models for Ensembling.1}% 14
+\BOOKMARK [2][-]{Subsection.4.8.defaultMean.2}{defaultMean}{Section.3.Models for Ensembling.1}% 15
+\BOOKMARK [2][-]{Subsection.4.9.defaultMedian.2}{defaultMedian}{Section.3.Models for Ensembling.1}% 16
+\BOOKMARK [2][-]{Subsection.4.10.defaultMixedModel.2}{defaultMixedModel}{Section.3.Models for Ensembling.1}% 17
+\BOOKMARK [2][-]{Subsection.4.11.defaultNaive.2}{defaultNaive}{Section.3.Models for Ensembling.1}% 18
+\BOOKMARK [2][-]{Subsection.4.12.defaultSpline.2}{defaultSpline}{Section.3.Models for Ensembling.1}% 19
