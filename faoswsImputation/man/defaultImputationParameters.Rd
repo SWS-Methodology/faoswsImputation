@@ -67,6 +67,13 @@ Below is a description of the parameters:
   the flags will prepend "flagObservationStatus_" and "flagMethod_".  If
   this parameter is "", the original data columns are overwritten with the
   imputed data.
+  \item estimateNoData: This logical value indicates if imputation should
+  be performed for countries with no available observations.  For example,
+  a hierarchical regression model may be fit to the data via
+  defaultMixedModel (with an updated formula) or something similar.  Then,
+  this model could be used to estimate for countries with no available data
+  provided that data is available for some higher hierarchy.  The default,
+  though, is FALSE: one must set this option if it is desired to be used.
 }
 }
 

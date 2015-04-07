@@ -13,12 +13,13 @@
     but only data if level == "countryCommodity".}
     \item{\code{extrapolationRange}:}{How many time steps outside of
     the data is this model valid for?  Should be a positive integer
-    (or Inf).}
+    (or Inf).  Defaults to 0.}
     \item{\code{level}:}{The level at which this model is applied.
     Currently, must be one of "countryCommodity" or "commodity".  This
     defines if this model operates on each country-commodity pair
     individually ("countryCommodity" level) or all countries for a fixed
-    commodity ("commodity" level) at once.}
+    commodity ("commodity" level) at once.  Defaults to "countryCommodity".
+    }
 }
 }
 

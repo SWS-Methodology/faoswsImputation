@@ -70,6 +70,17 @@ read.example = function(file){
         FAOcountryProfile[, c("FAOST_CODE", "FAO_TABLE_NAME")], 
         by.x = "areaCode", by.y = "FAOST_CODE"))
     setnames(tmp2, old = "FAO_TABLE_NAME", new = "areaName")
+    tmp2[, productionSymb := ifelse(productionSymb == "", " ", productionSymb)]
+    tmp2[, areaHarvestedSymb := ifelse(areaHarvestedSymb == "", " ",
+                                       areaHarvestedSymb)]
+    tmp2[productionSymb == "/", productionSymb := " "]
+    tmp2[is.na(productionSymb), productionSymb := "M"]
+    tmp2[productionSymb %in% c("P", "X", "*"), productionSymb := "T"]
+    tmp2[productionSymb %in% c("C", "F"), productionSymb := "E"]
+    tmp2[is.na(areaHarvestedSymb), areaHarvestedSymb := "M"]
+    tmp2[areaHarvestedSymb == "/", areaHarvestedSymb := " "]
+    tmp2[areaHarvestedSymb %in% c("P", "X", "*"), areaHarvestedSymb := "T"]
+    tmp2[areaHarvestedSymb %in% c("C", "F"), areaHarvestedSymb := "E"]
 
     tmp2[, methodFlag := ifelse(productionSymb == "M", "u", "")]
     removeImputation(data = tmp2, value = "productionValue", 

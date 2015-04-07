@@ -69,7 +69,7 @@
 ##' @export
 ##' 
 
-defaultImputationParameters = function(variable){
+defaultImputationParameters = function(variable = NULL){
     out = list(
          yearValue = "timePointYears",
          byKey = "geographicAreaM49",
@@ -104,6 +104,12 @@ defaultImputationParameters = function(variable){
         out$imputationValueColumn = "Value_measuredElement_5510"
         out$imputationFlagColumn = "flagObservationStatus_measuredElement_5510"
         out$imputationMethodColumn = "flagMethod_measuredElement_5510"
+    } else if(is.numeric(variable)){
+        out$imputationValueColumn = paste0("Value_measuredElement_", variable)
+        out$imputationFlagColumn =
+            paste0("flagObservationStatus_measuredElement_", variable)
+        out$imputationMethodColumn =
+            paste0("flagMethod_measuredElement", variable)
     } else {
         stop("This variable has not yet been implemented!")
     }

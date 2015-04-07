@@ -37,8 +37,18 @@ ensureImputationInputs = function(data, imputationParameters){
     stopifnot(is.character(c(p$missingFlag, p$imputationFlag,
                              p$newMethodFlag, p$newImputationColumn)))
     
+    ### Check manually set parameters
+    manuallyAssigned = c(p$imputationValueColumn,
+                         p$imputationFlagColumn,
+                         p$imputationMethodColumn)
+    unAssigned = manuallyAssigned == ""
+    if(any(unAssigned))
+        stop("Certain parameters must be manually assigned and cannot be the ",
+             "default value of ''.  Currently problematic:\n",
+             paste0(c("imputationValueColumn", "imputationFlagColumn",
+                      "imputationMethodColumn")[unAssigned], sep = "\n"))
+    
     ### Check certain input parameters match allowable categories
-    stopifnot(p$variable %in% c("production", "yield", "seed"))
     stopifnot(p$maximumWeights <= 1 & p$maximumWeights >= 0.5)
     stopifnot(p$errorType %in% c("raw", "loocv"))
     stopifnot(p$groupCount >= 2)

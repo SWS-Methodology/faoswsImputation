@@ -4,15 +4,15 @@
 \alias{defaultMixedModel}
 \title{Mixed Model for Imputation}
 \usage{
-defaultMixedModel(data, maxdf = 5, weights = NULL, modelFormula,
+defaultMixedModel(data, df = 1, weights = NULL, modelFormula = NULL,
   imputationParameters)
 }
 \arguments{
 \item{data}{The data.table object containing the data.}
 
-\item{maxdf}{The maximum degree of freedom for the spline.}
+\item{df}{The number of degrees of freedom for the spline.}
 
-\item{weights}{The weights for the observation}
+\item{weights}{The weights for the observations.}
 
 \item{modelFormula}{Formula specifying how the dependent variable (value)
 depends on the other columns of data.  Should be a valid mixed model
@@ -26,6 +26,23 @@ Returns a vector of the estimated/imputed values.  If a value
 existed in the original data, then an NA is returned in that location.
 }
 \description{
-This function imputes missing values through linear mixed model.
+This function imputes missing values with a linear mixed model.
+}
+\details{
+The default functionality of this model is to fit a linear mixed model to
+the data.  time and intercept are assumed to be fixed effects, and the
+random effects are specified by the byKey parameter of
+imputationParameters.  So, for example, byKey may reference the variable
+containing country data.  In that case, a model is fit which assumes a
+linear relationship between production (or whatever dependent variable the
+user has specified) and time.  However, the intercept and slope of this
+fit varies from country to country, and so country is considered a random
+effect.
+
+Moreover, the model fit is not a simple linear regression, but rather a
+spline regression (using the bs function from the \pkg{splines} package).
+The fit of this model will therefore depend on the number of degrees of
+freedom of this spline model (and, if the degrees of freedom is 1, then the
+simple linear regression model is used).
 }
 

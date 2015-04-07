@@ -9,7 +9,10 @@
 ##' cross-validation error of the global models (or "commodity" level) and uses
 ##' those errors to determine the final weights.
 ##' 
-##' @param
+##' @param data The data.table object containing the data which will be imputed.
+##' @param weights A data.table containing the currently estimated ensemble
+##' weights and errors.  These are used to compute the global errors and add new
+##' weights for models with missing data.
 ##' @param imputationParameters A list of the parameters for the imputation
 ##' algorithms.  See defaultImputationParameters() for a starting point.
 ##' 
