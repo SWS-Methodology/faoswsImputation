@@ -37,8 +37,8 @@ computeEnsembleWeight = function(data, cvGroup, fits, method = "inverse",
                   by = c(imputationParameters$byKey)]
     if(min(counts[, V1]) == 0 & !imputationParameters$estimateNoData)
         stop("Some countries have no data.  Have you ran removeNoInfo?  Or, ",
-             "you could set imputationParameters$estimateNoData to TRUE, but ",
-             "you'll need commodity-level models to impute these cases.")
+             "you could set imputationParameters$estimateNoData to TRUE, and ",
+             "you'll need global-level models to impute these cases.")
     
     ### If doing loocv, compute a new fits object
     if(imputationParameters$errorType == "loocv")

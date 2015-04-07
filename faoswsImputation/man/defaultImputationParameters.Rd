@@ -4,7 +4,7 @@
 \alias{defaultImputationParameters}
 \title{Default Imputation Parameters}
 \usage{
-defaultImputationParameters(variable)
+defaultImputationParameters(variable = NULL)
 }
 \arguments{
 \item{variable}{Should be one of "production", "yield", or "seed".  These

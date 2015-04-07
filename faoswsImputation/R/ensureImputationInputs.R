@@ -83,6 +83,16 @@ ensureImputationInputs = function(data, imputationParameters){
     data[, c(p$imputationMethodColumn) :=
              as.character(get(p$imputationMethodColumn))]
     data[, c(p$yearValue) := as.numeric(get(p$yearValue))]
+    
+    ### Make sure byKey partitions the data (i.e. only one time observation per
+    ### byKey value)
+    uniquePts = data[, .N, by = c(p$byKey, p$yearValue)]
+    if(max(uniquePts$N) > 1)
+        stop("The byKey parameter does not partition the data, but it must ",
+             "for ensemble imputation to be valid.  Check ",
+             "imputationParameters$byKey and make sure that the input ",
+             "dataset has at most one observation for each unique ",
+             "combination of the byKey variables and the time variable.")
 
     ############################# Flag checks #############################
     

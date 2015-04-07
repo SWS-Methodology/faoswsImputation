@@ -21,7 +21,7 @@ existed in the original data, then an NA is returned in that location.
 }
 \description{
 This function takes any model which is designed to run on a simple time
-series (i.e. at the commodity-country level) and applies it to each country
-in turn, thus making it a commodity level model.
+series (i.e. at the local level) and applies it to each country
+in turn, thus making it a global model.
 }
 

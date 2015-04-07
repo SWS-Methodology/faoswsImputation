@@ -10,15 +10,15 @@
     \item{\code{model}:}{The function defining how the model is fit to
     the data.  The function should take one or two arguments: data and
     imputationParameters (see extendSimpleModel) if level == "country"
-    but only data if level == "countryCommodity".}
+    but only data if level == "global".}
     \item{\code{extrapolationRange}:}{How many time steps outside of
     the data is this model valid for?  Should be a positive integer
     (or Inf).  Defaults to 0.}
     \item{\code{level}:}{The level at which this model is applied.
-    Currently, must be one of "countryCommodity" or "commodity".  This
-    defines if this model operates on each country-commodity pair
-    individually ("countryCommodity" level) or all countries for a fixed
-    commodity ("commodity" level) at once.  Defaults to "countryCommodity".
+    Currently, must be one of "global" or "local".  This
+    defines if this model operates on each "local" subset of the data
+    (defined by the byKey) or all data at once ("global").  Defaults to
+    "local".
     }
 }
 }

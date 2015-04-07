@@ -20,10 +20,10 @@ computeEnsembleFit = function(data, imputationParameters){
     ### Fit Models
     fits = lapply(imputationParameters$ensembleModels,
         FUN = function(model){
-            if(model@level == "commodity"){
+            if(model@level == "global"){
                 model@model(data = data,
                             imputationParameters = imputationParameters)
-            } else if(model@level == "countryCommodity"){
+            } else if(model@level == "local"){
                 extendSimpleModel(data = data, model = model@model,
                                   imputationParameters = imputationParameters)
             }

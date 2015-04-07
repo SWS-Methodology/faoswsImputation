@@ -36,9 +36,9 @@ computeErrorLOOCV = function(data, model, cvGroup, imputationParameters){
         dataTemporary[cvGroup == i, imputationValueColumn := NA]
         setnames(dataTemporary, old = "imputationValueColumn",
                  new = imputationParameters$imputationValueColumn)
-        if(model@level == "commodity"){
+        if(model@level == "global"){
             fitTemporary = model@model(data = dataTemporary)
-        } else if(model@level == "countryCommodity"){
+        } else if(model@level == "local"){
             fitTemporary = extendSimpleModel(data = dataTemporary,
                 model = model@model,
                 imputationParameters = imputationParameters)

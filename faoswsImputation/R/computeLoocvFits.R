@@ -32,11 +32,11 @@ computeLoocvFits = function(data, cvGroup, imputationParameters){
             dataTemporary = copy(data)
             dataTemporary[cvGroup == j,
                           c(imputationParameters$imputationValueColumn) := NA]
-            if(model@level == "commodity"){
+            if(model@level == "global"){
                 fitTemporary = model@model(data = dataTemporary,
                                            imputationParameters =
                                                imputationParameters)
-            } else if(model@level == "countryCommodity"){
+            } else if(model@level == "local"){
                 fitTemporary = extendSimpleModel(data = dataTemporary,
                                                  model = model@model,
                                                  imputationParameters =

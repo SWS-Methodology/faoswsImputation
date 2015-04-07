@@ -468,9 +468,9 @@ This section describes the different base learners for the ensemble methodology,
 
 We wish to be able to construct models of varying levels of complexity, and in doing so we'd like to be able to build very localized models as well as more general/global models.  One way of doing this is by restricting the training dataset for each model constructed.  For example, if we have fairly good data availability for a particular country/commodity, then we may wish to use only that country's data when building a model.  However, if one country/commodity only has a few valid observations, then we may need to use global trends for that commodity to model that country/commodity more accurately.
 
-In the current code, there are two ``levels'' for constructing a model: ``countryCommodity'' and ``commodity.''  The first, ``countryCommodity,'' means that the model will only use data for that specific country/commodity pair in the fitting of the model.  Thus, we will construct a different model for each different country/commodity time series.  Most of the implemented models fall under this methodology: mean, linear, exponential, logistic, naive, loess, splines, and MARS.  
+In the current code, there are two ``levels'' for constructing a model: ``local'' and ``global.''  The first, ``local,'' means that the model will only use data for that specific slice of data (defined by the byKey parameter) in the fitting of the model.  Thus, we will construct a different model for each different time series slice of the data.  Most of the implemented models fall under this methodology: mean, linear, exponential, logistic, naive, loess, splines, and MARS.  
 
-The ``commodity'' level means that the model uses data for that commodity but considers all countries.  The mixed model follows this approach in that all data for one commodity is used to fit a mixed effects model (where year is considered a fixed effect and country a random effect).
+The ``global'' level means that the model uses all the data available.  The mixed model follows this approach in that all data is used to fit a mixed effects model (where year is considered a fixed effect and country a random effect).
 
 \subsection{Extrapolation}
 

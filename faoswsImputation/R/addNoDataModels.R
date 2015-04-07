@@ -6,8 +6,8 @@
 ##' ensemble.
 ##' 
 ##' This function computes the weights for these models by looking at the
-##' cross-validation error of the global models (or "commodity" level) and uses
-##' those errors to determine the final weights.
+##' cross-validation error of the global models and uses those errors to
+##' determine the final weights.
 ##' 
 ##' @param data The data.table object containing the data which will be imputed.
 ##' @param weights A data.table containing the currently estimated ensemble
@@ -28,7 +28,7 @@ addNoDataModels = function(data, weights, imputationParameters){
     modelLevel = sapply(imputationParameters$ensembleModels,
                         function(x) x@level)
     globalModels = names(imputationParameters$ensembleModels)[
-        modelLevel == "commodity"]
+        modelLevel == "global"]
     
     ## Determine which byKey groups have no data.  It's a little complicated
     ## because byKey could be a vector, so we have to do a merge.
