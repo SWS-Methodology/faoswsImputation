@@ -52,10 +52,11 @@ ensembleImpute = function(data, imputationParameters){
     ## print(modelWeights)
     ensembleFit = computeEnsemble(modelFits, modelWeights)
     ensemble[missIndex] = ensembleFit[missIndex]
-    if(imputationParameters$plotImputation){
+    if(imputationParameters$plotImputation != ""){
         plotEnsemble(data = data, modelFits = modelFits,
                      modelWeights = modelWeights, ensemble = ensemble,
-                     imputationParameters = imputationParameters)
+                     imputationParameters = imputationParameters,
+                     returnFormat = imputationParameters$plotImputation)
 #         plotEnsembleOld(data, modelFits, modelWeights, ensemble)
     }
     ensemble

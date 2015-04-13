@@ -31,8 +31,7 @@ ensureImputationInputs = function(data, imputationParameters){
              " again.")
     if(any(names(p$ensembleModels) == ""))
         stop("No ensembleModel's can be named ''")
-    stopifnot(is.logical(c(p$restrictWeights, p$plotImputation,
-                           p$estimateNoData)))
+    stopifnot(is.logical(c(p$restrictWeights, p$estimateNoData)))
     stopifnot(is.numeric(p$groupCount))
     stopifnot(is.character(c(p$missingFlag, p$imputationFlag,
                              p$newMethodFlag, p$newImputationColumn)))
@@ -51,6 +50,7 @@ ensureImputationInputs = function(data, imputationParameters){
     ### Check certain input parameters match allowable categories
     stopifnot(p$maximumWeights <= 1 & p$maximumWeights >= 0.5)
     stopifnot(p$errorType %in% c("raw", "loocv"))
+    stopifnot(p$plotImputation %in% c("", "faceted", "prompt"))
     stopifnot(p$groupCount >= 2)
     stopifnot(p$groupCount <= 100)
     

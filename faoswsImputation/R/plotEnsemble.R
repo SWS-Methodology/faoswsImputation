@@ -155,13 +155,13 @@ plotEnsemble = function(data, modelFits, modelWeights, ensemble,
                                          shape = "none", fill = variable)) +
                 geom_point(data = toPlotList[[i]],
                            aes(x = year, y = ensemble, color = ifelse(is.na(
-                               imputationParameters$imputationValueColumn),
+                               imputationValueColumn),
                                "Ensemble", "Data"),
                                shape = ifelse(is.na(
-                                   imputationParameters$imputationValueColumn),
+                                   imputationValueColumn),
                                    "Ensemble", "Data"),
                                fill = ifelse(is.na(
-                                   imputationParameters$imputationValueColumn),
+                                   imputationValueColumn),
                                    "Ensemble", "Data"))) +
                 scale_size_continuous(range = c(.5, 2)) +
                 scale_color_manual(values = c("black", "black", plotColors),
