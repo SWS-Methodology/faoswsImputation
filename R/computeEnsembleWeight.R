@@ -17,13 +17,21 @@
 ##' @param imputationParameters A list of the parameters for the imputation
 ##' algorithms.  See defaultImputationParameters() for a starting point.
 ##' 
+##' @return A list of two objects.  The first is a matrix of weights that can
+##' be multiplied by the fitted models to give the imputed values.  Rows
+##' corresponding to non-missing values in data have values of NA.
+##' 
+##' The second object is a matrix of errors for each model and each byKey.
+##' These error values are used for creating an estimate for the variability
+##' of each imputed value.
+##' 
 ##' @export
 ##' 
 
 computeEnsembleWeight = function(data, cvGroup, fits, method = "inverse",
                                  imputationParameters){
     
-    ### Data Quality Checks
+    ## Data Quality Checks
     if(!exists("ensuredImputationData") || !ensuredImputationData)
         ensureImputationInputs(data = data,
                                imputationParameters = imputationParameters)
@@ -40,12 +48,12 @@ computeEnsembleWeight = function(data, cvGroup, fits, method = "inverse",
              "you could set imputationParameters$estimateNoData to TRUE, and ",
              "you'll need global-level models to impute these cases.")
     
-    ### If doing loocv, compute a new fits object
+    ## If doing loocv, compute a new fits object
     if(imputationParameters$errorType == "loocv")
         fits = computeLoocvFits(data = data, cvGroup = cvGroup,
                                 imputationParameters = imputationParameters)
     
-    ### Compute the actual weights by passing to another function
+    ## Compute the actual weights by passing to another function
     if(method == "inverse"){
         weights = getInverseWeights(data = data, fits = fits,
                     imputationParameters = imputationParameters)
@@ -67,29 +75,30 @@ computeEnsembleWeight = function(data, cvGroup, fits, method = "inverse",
         weights = rbind(weights, newRows)
     }
     
-    ### Apply adjustments to weights (NA->0, reduce below maximumWeights)
+    ## Apply adjustments to weights (NA->0, reduce below maximumWeights)
     weights[is.na(weight), weight := 0]
     maxWt = imputationParameters$maximumWeights
-    # Assign weights exceeding the threshold a new value.  We want this new
-    # value to be maximumWeights, but after reassigning this weight we have
-    # to re-normalize the weights so they sum to 1.  The (1-weight)/(1-max)
-    # factor ensures the final weight for this maximum case will be
-    # maximumWeights.
+    ## Assign weights exceeding the threshold a new value.  We want this new
+    ## value to be maximumWeights, but after reassigning this weight we have
+    ## to re-normalize the weights so they sum to 1.  The (1-weight)/(1-max)
+    ## factor ensures the final weight for this maximum case will be
+    ## maximumWeights.
     weights[weight > maxWt, weight := maxWt * (1 - weight) / (1 - maxWt)]
-    # If one area only has one non-missing weight, set to 1:
-    weights[, validModelCnt := sum(!is.na(averageError)),
+    ## If one area only has one non-missing weight, set to 1:
+    weights[, validModelCnt := sum(!is.na(modelError)),
              by = c(imputationParameters$byKey)]
-    # If there's only one valid model, it should have all the weight.
-    weights[validModelCnt == 1 & !is.na(weight), weight := 1]
-    # If there's no valid models, all should have 0 weight.
+    ## If there's only one valid model, it should have all the weight.
+    weights[validModelCnt == 1 & !is.na(modelError), weight := 1]
+    ## If there's no valid models, all should have 0 weight.
     weights[validModelCnt == 0, weight := 0]
     weights[, validModelCnt := NULL]
-    # Re-normalize the weights so they sum to 1:
+    ## Re-normalize the weights so they sum to 1:
     weights[, weight := weight / sum(weight),
              by = c(imputationParameters$byKey)]
     
-    ### Convert weights to a matrix
-    weights = getWeightMatrix(data = data, w = weights,
-                              imputationParameters = imputationParameters)
-    weights
+    ## Convert weights to a matrix
+    
+    output = getWeightMatrix(data = data, w = weights,
+                             imputationParameters = imputationParameters)
+    output
 }

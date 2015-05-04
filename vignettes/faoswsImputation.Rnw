@@ -323,7 +323,7 @@ the imputations from the model in three new columns (value, observation flag,
 and method flag).  This allows you to examine several different ensembles and
 compare their performances.  The default value of
 imputationParams\$newImputationColumn is just an empty string, and in this case
-the imputation will place the imputations into the processed data.table.
+the algorithm will place the imputations into the processed data.table.
 
 The graphs contain a lot of information.  First, the dots represent observed
 values, and the crosses represent the imputations.  The different colored lines

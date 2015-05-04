@@ -22,13 +22,13 @@
 
 getInverseWeights = function(data, fits, imputationParameters){
     
-    ### Data Quality Checks
+    ## Data Quality Checks
     if(!exists("ensuredImputationData") || !ensuredImputationData)
         ensureImputationInputs(data = data,
                                imputationParameters = imputationParameters)
     stopifnot(nrow(data) == sapply(fits, length))
 
-    ### Compute errors from each model
+    ## Compute errors from each model
     error = lapply(1:length(fits),
            FUN = function(i){
                out = computeErrorRate(data = data, fit = fits[[i]],
@@ -42,10 +42,10 @@ getInverseWeights = function(data, fits, imputationParameters){
                                 fit = fits[[i]])
            })
     error = do.call("rbind", error)
-    # Sometimes, a model will fail in the leave-out-one cross-validation.  If
-    # that happens, we'll get a missing value (NA) for that error.  To work
-    # around this, assign that NA to the highest error for that observation.
-    # In other words, assumme the model that failed did as poor as possible.
+    ## Sometimes, a model will fail in the leave-out-one cross-validation.  If
+    ## that happens, we'll get a missing value (NA) for that error.  To work
+    ## around this, assign that NA to the highest error for that observation.
+    ## In other words, assumme the model that failed did as poor as possible.
     error[, error := ifelse(is.na(error), max(error, na.rm = TRUE), error),
           by = c(imputationParameters$byKey, "year")]
     ## Errors should never be infinity, so this signals some sort of problem:
@@ -61,54 +61,58 @@ getInverseWeights = function(data, fits, imputationParameters){
             "Or, you could also try errorType = 'raw' (although loocv is", 
             "generally preferred).")
     }
-    # If the fit failed, we can't use this model.  Assign error of Inf.  To
-    # determine if a model failed, we can check if a fitted value is NULL (but
-    # we must exclude values which are missing, as loocv won't estimate those
-    # and they won't influence error calcs anyways).
+    ## If the fit failed, we can't use this model.  Assign error of Inf.  To
+    ## determine if a model failed, we can check if a fitted value is NULL (but
+    ## we must exclude values which are missing, as loocv won't estimate those
+    ## and they won't influence error calcs anyways).
     error[, modelFailed := any(is.na(fit) & !missingValue),
           by = c(imputationParameters$byKey, "model")]
     error[(modelFailed), error := NA]
     
-    ### Create the weights data.table using the errors
-    # Aggregate the errors using the provided error function, applying to each
-    # byKey group and model individually.
+    ## Create the weights data.table using the errors
+    ## Aggregate the errors using the provided error function, applying to each
+    ## byKey group and model individually.
     weights = error[!(missingValue), imputationParameters$errorFunction(error),
                     by = c(imputationParameters$byKey, "model")]
-    setnames(weights, old = "V1", new = "averageError")
+    ## Check if error function is MSE.  If not, raise a warning.
+    ## The only way I could think of to test if the error function is MSE is
+    ## to pass in 1:10 and verify I get the right answer.
+    if(imputationParameters$errorFunction(1:10) != 38.5)
+        warning("Using a different error function than mean-squared error ",
+                "will create invalid variance estimates.")
+    
+    setnames(weights, old = "V1", new = "modelError")
     if(imputationParameters$errorType == "raw"){
-        # Perfect fits can give really small errors but actually be overfitting
-        # the data.  To prevent that, set small errors to the mean error.  But,
-        # if all errors are less than 1e-3, change weights to uniform (in this
-        # case, averageErrorByKey will be NA).
-        ## NOTE (Michael): Maybe change this to uniform weight
+        ## Perfect fits can give really small errors but actually be overfitting
+        ## the data.  To prevent that, set small errors to the mean error.  But,
+        ## if all errors are less than 1e-3, change weights to uniform (in this
+        ## case, averageErrorByKey will be NA).
         weights[, averageErrorByKey :=
-                    mean(averageError[averageError > 1e-3], na.rm = TRUE),
+                    mean(modelError[modelError > 1e-3], na.rm = TRUE),
                 by = c(imputationParameters$byKey)]
-        weights[, averageError := ifelse(averageError < 1e-3 &
+        weights[, modelError := ifelse(modelError < 1e-3 &
                 !is.na(averageErrorByKey), averageErrorByKey,
-            averageError), by = c(imputationParameters$byKey)]
+            modelError), by = c(imputationParameters$byKey)]
         ## If we still haven't corrected averageError, then all weights for a
         ## particular key are < 1e-3.  In this case, assign errors of 1 to all.
-        weights[, averageError := ifelse(averageError < 1e-3,
-                                         1, averageError)]
+        weights[, modelError := ifelse(modelError < 1e-3, 1, modelError)]
     } else if(imputationParameters$errorType == "loocv"){
-        # Really small errors will cause 1/error^2 to be Inf, and this
-        # gives weights of all 0, NA, NaN.  Prevent that by limiting how
-        # small the errors can be:
+        ## Really small errors will cause 1/error^2 to be Inf, and this
+        ## gives weights of all 0, NA, NaN.  Prevent that by limiting how
+        ## small the errors can be:
         weights[, averageErrorByKey :=
-                    mean(averageError[averageError > 1e-16], na.rm = TRUE),
+                    mean(modelError[modelError > 1e-16], na.rm = TRUE),
                 by = c(imputationParameters$byKey)]
-        weights[, averageError := ifelse(averageError < 1e-16 &
+        weights[, modelError := ifelse(modelError < 1e-16 &
                 !is.na(averageErrorByKey), averageErrorByKey,
-            averageError), by = c(imputationParameters$byKey)]
+            modelError), by = c(imputationParameters$byKey)]
         ## If we still haven't corrected averageError, then all weights for a
         ## particular key are < 1e-16.  In this case, assign the same errors to
         ## all.
-        weights[, averageError := ifelse(averageError < 1e-16,
-                                         1e-16, averageError)]
+        weights[, modelError := ifelse(modelError < 1e-16, 1e-16, modelError)]
     }
-    weights[, weight := (1/averageError^2) /
-                sum(1/averageError^2, na.rm = TRUE),
+    weights[, weight := (1/modelError^2) /
+                sum(1/modelError^2, na.rm = TRUE),
             by = c(imputationParameters$byKey)]
     return(weights)
 }

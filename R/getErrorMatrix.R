@@ -1,4 +1,4 @@
-##' Get Weight Matrix
+##' Get Error Matrix
 ##' 
 ##' Initially, a weight is computed for each model and byKey.  However, some
 ##' models are not valid for some observations (as certain models are limited
@@ -21,13 +21,9 @@
 ##' @param imputationParameters A list of the parameters for the imputation
 ##' algorithms.  See defaultImputationParameters() for a starting point.
 ##' 
-##' @return A list of two objects.  The first is a matrix of weights that can
-##' be multiplied by the fitted models to give the imputed values.  Rows
-##' corresponding to non-missing values in data have values of NA.
-##' 
-##' The second object is a matrix of errors for each model and each byKey.
-##' These error values are used for creating an estimate for the variability
-##' of each imputed value.
+##' @return A matrix of weights that can be multiplied by the fitted models to
+##' give the imputed values.  Rows corresponding to non-missing values in data
+##' have values of NA.
 ##' 
 ##' @export
 ##' 
@@ -74,18 +70,13 @@ getWeightMatrix = function(data, w, imputationParameters){
     ## Renormalize weights so all columns add to 1
     weightMatrix[, weight := weight / sum(weight),
                  by = c(imputationParameters$byKey, year)]
-    castFormula = paste(paste(c(imputationParameters$byKey, year),
-                              collapse = " + "),
-                        "~ model")
-    errorMatrix = dcast.data.table(weightMatrix, castFormula,
-                                   value.var = "modelError")
+    castFormula = paste( paste(c(imputationParameters$byKey, year),
+                               collapse = " + "),
+                         "~ model")
     weightMatrix = dcast.data.table(weightMatrix, castFormula, 
                                      value.var = "weight")
-    ## Remove unneeded columns
-    errorMatrix[, c(imputationParameters$byKey, year) := NULL]
     weightMatrix[, c(imputationParameters$byKey, year) := NULL]
-    ## If data is observed, set weight to NA and error to 0.
-    weightMatrix[!is.na(data[, get(impValue)])] = NA
-    errorMatrix[!is.na(data[, get(impValue)])] = 0
-    return(list(weightMatrix, errorMatrix))
+    weightMatrix[!is.na(data[, get(impValue)])] =
+        NA
+    return(weightMatrix)
 }

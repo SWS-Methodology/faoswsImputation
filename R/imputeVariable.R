@@ -31,10 +31,11 @@ imputeVariable = function(data, imputationParameters){
         newMethodFlagColumn = paste0("flagMethod_",
                                 imputationParameters$newImputationColumn)
     }
+    newVarianceColumn = "ensembleVariance"
     
     missingIndex = is.na(
         data[, get(imputationParameters$imputationValueColumn)])
-    data[, c(newValueColumn) := 
+    data[, c(newValueColumn, newVarianceColumn) := 
              ensembleImpute(data = data,
                             imputationParameters = imputationParameters)]
     imputedIndex = missingIndex & !is.na(data[[newValueColumn]])

@@ -49,15 +49,14 @@ addNoDataModels = function(data, weights, imputationParameters){
     
     ## Add global models if we have locations needing them
     if(nrow(noDataLocations) > 0){
-        newRows = weights[, list(averageError = mean(averageError,
-                                                     na.rm = TRUE)),
+        newRows = weights[, list(modelError = mean(modelError, na.rm = TRUE)),
                                 by = model]
         ## Set non-global model error to Inf so they're never used here
-        newRows = newRows[!model %in% globalModels, averageError := Inf]
+        newRows = newRows[!model %in% globalModels, modelError := Inf]
         newRows = merge(noDataLocations, newRows)
         newRows$averageErrorByKey = NA
         newRows = as.data.table(newRows)
-        newRows[, weight := 1/averageError / sum(1/averageError),
+        newRows[, weight := 1/modelError / sum(1/modelError),
                  by = c(byKey)]
     } else {
         newRows = NULL

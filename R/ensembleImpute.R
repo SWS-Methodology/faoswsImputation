@@ -46,12 +46,15 @@ ensembleImpute = function(data, imputationParameters){
                           imputationParameters = imputationParameters)
     modelFits = computeEnsembleFit(data = data,
                                    imputationParameters = imputationParameters)
-    modelWeights = computeEnsembleWeight(data = data,
+    modelStats = computeEnsembleWeight(data = data,
         cvGroup = cvGroup, fits = modelFits,
         imputationParameters = imputationParameters)
+    modelWeights = modelStats[[1]]
+    modelErrors = modelStats[[2]]
     ## print(modelWeights)
-    ensembleFit = computeEnsemble(modelFits, modelWeights)
-    ensemble[missIndex] = ensembleFit[missIndex]
+    ensembleFit = computeEnsemble(fits = modelFits, weights = modelWeights,
+                                  errors = modelErrors)
+    ensemble[missIndex] = ensembleFit[missIndex, fit]
     if(imputationParameters$plotImputation != ""){
         plotEnsemble(data = data, modelFits = modelFits,
                      modelWeights = modelWeights, ensemble = ensemble,
@@ -59,5 +62,8 @@ ensembleImpute = function(data, imputationParameters){
                      returnFormat = imputationParameters$plotImputation)
 #         plotEnsembleOld(data, modelFits, modelWeights, ensemble)
     }
-    ensemble
+    data.table(
+        ensemble = ensemble,
+        variance = ensembleFit$variance
+    )
 }
