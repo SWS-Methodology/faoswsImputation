@@ -5,11 +5,11 @@
 ##' parameters and then modify parameters to match your particular
 ##' configuration.
 ##' 
-##' @param variable Should be one of "production", "yield", or "seed".  These
-##' are currently the three variables for which this imputation package has
-##' been used.  You may also set this to NULL and then manually assign values
-##' to the variable, imputationValueColumn, imputationFlagColumn, and
-##' imputationMethodColumn elements of this list.
+##' @param variable Should be one of "production", "yield", "seed", or the
+##' numeric element code.  These are currently the three variables for which
+##' this imputation package has been used.  You may also set this to NULL and
+##' then manually assign values to the variable, imputationValueColumn,
+##' imputationFlagColumn, and imputationMethodColumn elements of this list.
 ##' 
 ##' @return Returns a list of the default parameters used in the ensemble
 ##' imputation algorithms.
