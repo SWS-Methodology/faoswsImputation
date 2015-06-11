@@ -113,7 +113,7 @@ defaultImputationParameters = function(variable = NULL){
         out$imputationFlagColumn =
             paste0("flagObservationStatus_measuredElement_", variable)
         out$imputationMethodColumn =
-            paste0("flagMethod_measuredElement", variable)
+            paste0("flagMethod_measuredElement_", variable)
     } else {
         stop("This variable has not yet been implemented!")
     }
