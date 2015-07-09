@@ -387,7 +387,6 @@ available.
 
 <<impute-production>>=
 balanceProduction(data = okraProcessed,
-                  imputationParameters = imputationParams,
                   processingParameters = processingParams)
 imputationParams = defaultImputationParameters("production")
 imputationParams$ensembleModels =
@@ -423,7 +422,6 @@ yield have been imputed.
 
 <<balance-area-harvested>>=
 balanceAreaHarvested(data = okraProcessed,
-                     imputationParameters = imputationParams,
                      processingParameters = processingParams)
 @ 
 

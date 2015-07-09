@@ -26,8 +26,11 @@ extendSimpleModel = function(data, model, imputationParameters){
     impName = imputationParameters$imputationValueColumn
     missingIndex = is.na(data[, get(impName)])
     modelFit = data[,
-        # Apply the model if there is a missing value.  Else, return the data
-        if(any(is.na(get(impName)))){
+        # Apply the model if there is a missing value.  Else, return the data.
+        # Note: if a byKey group has no valid data, imputation cannot be
+        # performed either, so we only do this when there is missing AND non-
+        # missing data in a byKey group.
+        if(any(is.na(get(impName))) & any(!is.na(get(impName)))){
             # If all NA's are returned, sometimes type is logical.  Avoid this
             # by using the as.numeric below
             as.numeric(model(get(impName)))
