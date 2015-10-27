@@ -50,7 +50,7 @@ series data in the Statistical Working System}
   Food and Agriculture Organization of the United Nations (FAO)\\
   Viale delle Terme di Caracalla 00153 Rome, Italy\\
   E-mail: \email{joshua.browning@fao.org}\\
-  URL: \url{https://svn.fao.org/projects/SWS/RModules/faoswsImputation/}
+  URL: \url{https://github.com/SWS-Methodology/faoswsImputation}
 }
 
 \begin{document}
@@ -359,8 +359,8 @@ original variable:
 <<>>=
 imputationParams$newImputationColumn = ""
 imputeVariable(data = okraProcessed, imputationParameters = imputationParams)
-okraProcessed[, c("Value_test", "flagObservationStatus_test",
-                  "flagMethod_test") := NULL]
+invisible(okraProcessed[, c("Value_test", "flagObservationStatus_test",
+                  "flagMethod_test") := NULL])
 @
 
 If we now try to impute again, we see that imputation fails because we have no
@@ -387,7 +387,6 @@ available.
 
 <<impute-production>>=
 balanceProduction(data = okraProcessed,
-                  imputationParameters = imputationParams,
                   processingParameters = processingParams)
 imputationParams = defaultImputationParameters("production")
 imputationParams$ensembleModels =
@@ -423,7 +422,6 @@ yield have been imputed.
 
 <<balance-area-harvested>>=
 balanceAreaHarvested(data = okraProcessed,
-                     imputationParameters = imputationParams,
                      processingParameters = processingParams)
 @ 
 
@@ -533,13 +531,14 @@ these exist when observations are real and values are not being imputed.
 cvGroup = makeCvGroup(data = bahrainExample,
                       imputationParameters = imputationParameters)
 cvGroup
-modelWeights = computeEnsembleWeight(data = bahrainExample,
-                                     cvGroup = cvGroup,
-                                     fits = modelFits,
-                                     method = "inverse",
-                                     imputationParameters =
-                                         imputationParameters)
-modelWeights[, .(defaultArima, defaultExp, defaultLm)]
+modelStats = computeEnsembleWeight(data = bahrainExample,
+                                   cvGroup = cvGroup,
+                                   fits = modelFits,
+                                   method = "inverse",
+                                   imputationParameters =
+                                       imputationParameters)
+modelWeights = modelStats[[1]]
+modelWeights[, c("defaultArima", "defaultExp", "defaultLm")]
 dim(modelWeights)
 @
 
@@ -549,8 +548,9 @@ ensemble, and then plot it!
 <<dpi=100>>=
 ## Combine the models to obtain the ensemble
 ensemble = bahrainExample[, Value_measuredElement_5510]
-imputationFit = computeEnsemble(modelFits, modelWeights)
-ensemble[is.na(ensemble)] = imputationFit[is.na(ensemble)]
+modelErrors = modelStats[[2]]
+imputationFit = computeEnsemble(modelFits, modelWeights, modelErrors)
+ensemble[is.na(ensemble)] = imputationFit[is.na(ensemble), fit]
 plotEnsemble(data = bahrainExample, modelFits = modelFits,
              modelWeights = modelWeights, ensemble = ensemble,
              imputationParameters = imputationParameters)
@@ -800,7 +800,7 @@ updateMissingFlags(data = mixedModelData, value = "Value_measuredElement_5416",
 Now, let's run the ensemble imputation with the default imputation parameters.
 This example uses the \pkg{lme4} package to fit a mixed model.
 
-<<fig.height=3>>=
+<<fig.height=6>>=
 newParameters = defaultImputationParameters("yield")
 newParameters$newImputationColumn = "test"
 newParameters$estimateNoData = TRUE
@@ -821,12 +821,14 @@ model (also with the \pkg{lme4} package) that allows us to impute countries
 with missing data based on some hierarchy (for example, continents).  In this
 example, we just made up arbitrary regions.
 
-<<fig.height=3>>=
-mixedModelData[geographicAreaM49 == "66", Value_measuredElement_5416 := NA]
-mixedModelData[geographicAreaM49 == "66",
+<<fig.height=6>>=
+invisible({
+    mixedModelData[geographicAreaM49 == "66", Value_measuredElement_5416 := NA]
+    mixedModelData[geographicAreaM49 == "66",
                flagObservationStatus_measuredElement_5416 := "M"]
-mixedModelData[,region := factor(ifelse(geographicAreaM49 < 15, 1,
-                                 ifelse(geographicAreaM49 < 50, 2, 3)))]
+    mixedModelData[,region := factor(ifelse(geographicAreaM49 < 15, 1,
+                                     ifelse(geographicAreaM49 < 50, 2, 3)))]
+})
 formals(defaultMixedModel)$modelFormula = Value_measuredElement_5416 ~
     timePointYears*region + (timePointYears|geographicAreaM49/region)
 hierarchical = ensembleModel(model = defaultMixedModel, level = "global",
