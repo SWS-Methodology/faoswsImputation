@@ -74,6 +74,7 @@ defaultMixedModel = function(data, df = 1, weights = NULL, modelFormula = NULL,
     if(!inherits(model, "try-error")){
         ## Impute the data with lme.
         modelFit = predict(model, newdata = data, allow.new.levels = TRUE)
+        modelFit = pmax(modelFit, 0)
     } else {
         modelFit = rep(NA_real_, nrow(data))
     }
