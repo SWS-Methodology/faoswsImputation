@@ -90,6 +90,13 @@ buildEnsembleModel = function(data, imputationParameters, processingParameters){
         imputationParameters = imputationParameters)
     modelWeights = modelStats[[1]]
     modelErrors = modelStats[[2]]
+    if(imputationParameters$plotImputation != ""){
+        plotEnsemble(data = data, modelFits = modelFits,
+                     modelWeights = modelWeights, ensemble = ensemble,
+                     imputationParameters = imputationParameters,
+                     returnFormat = imputationParameters$plotImputation)
+#         plotEnsembleOld(data, modelFits, modelWeights, ensemble)
+    }
 
     ## Compute objects to save
     finalFit = computeEnsemble(fits = modelFits, weights = modelWeights,
