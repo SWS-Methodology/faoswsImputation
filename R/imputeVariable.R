@@ -1,12 +1,14 @@
 ##' Function to impute production or yield
-##'
-##' This is a wrapper of the ensemble imputation for the production
-##' domain.
-##'
-##' @param data The data.table object containing the data.
-##' @param imputationParameters A list of the parameters for the imputation
-##' algorithms.  See defaultImputationParameters() for a starting point.
 ##' 
+##' This is a wrapper of the ensemble imputation for the production domain.
+##' 
+##' @param data The data.table object containing the data.
+##' @param imputationParameters A list of the parameters for the imputation 
+##'   algorithms.  See defaultImputationParameters() for a starting point.
+##'   
+##' @return This function doesn't return any objects but modifies the underlying
+##'   data.table that it was passed.
+##'   
 ##' @export
 ##' 
 
