@@ -18,6 +18,10 @@ defaultLogistic = function(x){
     ### Data Quality Checks
     stopifnot(is.numeric(x))
     stopifnot(length(x) > 1)
+    
+    if(any(x < 0))
+        stop("Found a negative value in logistic fitting!  Value(s) = ",
+             paste(x[x<0], collapse = ","))
 
     time = 1:length(x)
     if(all(is.na(x)))
