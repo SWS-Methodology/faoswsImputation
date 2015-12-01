@@ -17,11 +17,12 @@
 ##' 
 ##' @export
 
-defaultMovingAverage = function(x, lookback = 3){
+defaultMovingAverage = function(x){ #, lookback = 3){
 
     ### Data Quality Checks
     stopifnot(is.numeric(x))
     stopifnot(length(x) > 1)
+    lookback = 3
     
     ## If lookback > number of observations, we can't do a rolling mean
     if(sum(!is.na(x)) < lookback){
@@ -34,8 +35,7 @@ defaultMovingAverage = function(x, lookback = 3){
     # lookback).  In those cases, use the first value.
     meanEst = c(rep(meanEst[1], lookback-1), meanEst)
     meanEst = data.frame(meanEst, index = index[!is.na(x)])
-    fit = x
-    fit[is.na(fit)] = sapply(index[is.na(fit)], function(ind){
+    fit = sapply(index, function(ind){
         usedIndex = which.max(meanEst$index[meanEst$index < ind])
         if(length(usedIndex) == 0){
             ## Global mean:
