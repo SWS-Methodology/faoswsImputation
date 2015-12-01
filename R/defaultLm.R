@@ -1,8 +1,8 @@
 ##' The default linear regression model for the ensemble model.
 ##'
 ##' @param x A numeric vector to be imputed.
+##' 
 ##' @export
-
 
 defaultLm = function(x){
 
