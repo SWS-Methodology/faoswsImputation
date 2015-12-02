@@ -9,11 +9,11 @@
 ##' @param x A numeric vector to be imputed.
 ##' @param lookback The number of previous observations to use.
 ##'   
-##' @examples{
+##' @examples
 ##' defaultMovingAverage(x = c(10, 10, 10, NA, 1, NA))
 ##' defaultMovingAverage(x = c(NA, 1:5, NA))
 ##' defaultMovingAverage(x = c(NA, 1, NA, 2, NA, 3, NA, 4, NA, 5, NA))
-##' }
+##' 
 ##' 
 ##' @export
 
