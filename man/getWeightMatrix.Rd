@@ -40,19 +40,6 @@ A list of two objects.  The first is a matrix of weights that can be
   object is a matrix of errors for each model and each byKey. These error
   values are used for creating an estimate for the variability of each
   imputed value.
-
-Initially, a weight is computed for each model and byKey.  However, some
-models are not valid for some observations (as certain models are limited in
-how far they can extrapolate outside the range of the data).  Thus, the
-final weight for each ensemble model at each observation will depend on that
-models performance for that byKey group as well as if that model is valid at
-that point.
-
-This function creates a weight matrix to use in constructing the final
-ensemble.  If F is a nxk matrix (n = number of observations, k = number of
-models) containing the fitted models, then this function constructs W,
-another nxk matrix of weights.  The final ensemble estimate for observation
-i can be computed by sum(F[i,]*W[i,]).
 }
 \description{
 Initially, a weight is computed for each model and byKey.  However, some
@@ -62,9 +49,20 @@ final weight for each ensemble model at each observation will depend on
 that models performance for that byKey group as well as if that model is
 valid at that point.
 
-Get Weight Matrix
+Initially, a weight is computed for each model and byKey.  However, some
+models are not valid for some observations (as certain models are limited in
+how far they can extrapolate outside the range of the data).  Thus, the
+final weight for each ensemble model at each observation will depend on that
+models performance for that byKey group as well as if that model is valid at
+that point.
 }
 \details{
+This function creates a weight matrix to use in constructing the final
+ensemble.  If F is a nxk matrix (n = number of observations, k = number of
+models) containing the fitted models, then this function constructs W,
+another nxk matrix of weights.  The final ensemble estimate for observation
+i can be computed by sum(F[i,]*W[i,]).
+
 This function creates a weight matrix to use in constructing the final
 ensemble.  If F is a nxk matrix (n = number of observations, k = number of
 models) containing the fitted models, then this function constructs W,

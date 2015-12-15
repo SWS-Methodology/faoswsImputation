@@ -84,8 +84,7 @@ a \textit{data.table} object. This is also the default when data are
 queried from the API of the Statistical Working System (SWS).
 
 <<read-data, results='markup'>>=
-file = system.file("extdata", "okra.csv", package = "faoswsImputation")
-okra = fread(input = file)
+okra = data.table(okra)
 str(okra)
 @
 
