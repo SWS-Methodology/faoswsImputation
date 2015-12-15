@@ -19,7 +19,7 @@ defaultLogistic = function(x){
     stopifnot(is.numeric(x))
     stopifnot(length(x) > 1)
     
-    if(any(x < 0))
+    if(any(x < 0, na.rm = TRUE))
         stop("Found a negative value in logistic fitting!  Value(s) = ",
              paste(x[x<0], collapse = ","))
 

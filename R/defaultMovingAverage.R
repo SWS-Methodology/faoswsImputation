@@ -1,13 +1,12 @@
 ##' The default moving average model.
 ##' 
-##' This module is very simple: it uses a mean of the last k observed (non-NA) 
-##' values to predict the next value.  k is specified by "lookback".  If there 
-##' aren't k previous values, the number available are used.  If there aren't 
-##' any previous values, the global mean is imputed (imputing NA could cause
-##' issues with the ensemble weighting process).
+##' This module is very simple: it uses a mean of the last 3 observed (non-NA) 
+##' values to predict the next value.  If there aren't 3 previous values, the
+##' number available are used.  If there aren't any previous values, the global
+##' mean is imputed (imputing NA could cause issues with the ensemble weighting
+##' process).
 ##' 
 ##' @param x A numeric vector to be imputed.
-##' @param lookback The number of previous observations to use.
 ##'   
 ##' @examples
 ##' defaultMovingAverage(x = c(10, 10, 10, NA, 1, NA))
@@ -17,7 +16,7 @@
 ##' 
 ##' @export
 
-defaultMovingAverage = function(x){ #, lookback = 3){
+defaultMovingAverage = function(x){
 
     ### Data Quality Checks
     stopifnot(is.numeric(x))

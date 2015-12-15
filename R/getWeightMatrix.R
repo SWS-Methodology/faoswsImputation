@@ -1,34 +1,33 @@
 ##' Get Weight Matrix
 ##' 
-##' Initially, a weight is computed for each model and byKey.  However, some
-##' models are not valid for some observations (as certain models are limited
-##' in how far they can extrapolate outside the range of the data).  Thus, the
-##' final weight for each ensemble model at each observation will depend on
-##' that models performance for that byKey group as well as if that model is
-##' valid at that point.
+##' Initially, a weight is computed for each model and byKey.  However, some 
+##' models are not valid for some observations (as certain models are limited in
+##' how far they can extrapolate outside the range of the data).  Thus, the 
+##' final weight for each ensemble model at each observation will depend on that
+##' models performance for that byKey group as well as if that model is valid at
+##' that point.
 ##' 
-##' This function creates a weight matrix to use in constructing the final
-##' ensemble.  If F is a nxk matrix (n = number of observations, k = number of
-##' models) containing the fitted models, then this function constructs W,
-##' another nxk matrix of weights.  The final ensemble estimate for observation
+##' This function creates a weight matrix to use in constructing the final 
+##' ensemble.  If F is a nxk matrix (n = number of observations, k = number of 
+##' models) containing the fitted models, then this function constructs W, 
+##' another nxk matrix of weights.  The final ensemble estimate for observation 
 ##' i can be computed by sum(F[i,]*W[i,]).
-##'
+##' 
 ##' @param data The data.table containing the data.
-##' @param w The weights data.table, typically as produced in
-##' computeEnsembleWeight.  There should be three columns: byKey, model, and
-##' weight.  Weight gives the model weight for model within the byKey group,
-##' and exactly one row should exist for each byKey/model pair.
-##' @param imputationParameters A list of the parameters for the imputation
-##' algorithms.  See defaultImputationParameters() for a starting point.
-##' 
-##' @return A list of two objects.  The first is a matrix of weights that can
-##' be multiplied by the fitted models to give the imputed values.  Rows
-##' corresponding to non-missing values in data have values of NA.
-##' 
-##' The second object is a matrix of errors for each model and each byKey.
-##' These error values are used for creating an estimate for the variability
-##' of each imputed value.
-##' 
+##' @param w The weights data.table, typically as produced in 
+##'   computeEnsembleWeight.  There should be three columns: byKey, model, and 
+##'   weight.  Weight gives the model weight for model within the byKey group, 
+##'   and exactly one row should exist for each byKey/model pair.
+##' @param imputationParameters A list of the parameters for the imputation 
+##'   algorithms.  See defaultImputationParameters() for a starting point.
+##'   
+##' @return A list of two objects.  The first is a matrix of weights that can be
+##'   multiplied by the fitted models to give the imputed values.  Rows 
+##'   corresponding to non-missing values in data have values of NA. The second
+##'   object is a matrix of errors for each model and each byKey. These error
+##'   values are used for creating an estimate for the variability of each
+##'   imputed value.
+##'   
 ##' @export
 ##' 
 

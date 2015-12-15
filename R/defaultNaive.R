@@ -13,7 +13,6 @@ defaultNaive = function(x){
     stopifnot(is.numeric(x))
     stopifnot(length(x) > 1)
 
-    require(zoo)
     nobserved = length(na.omit(x))
     yearCount = length(x)
     if(all(is.na(x)))
@@ -28,7 +27,8 @@ defaultNaive = function(x){
                tmp = rep(na.omit(x), yearCount)
            },
            naive = {
-               tmp = na.locf(na.locf(na.approx(x, na.rm = FALSE),
+               tmp = zoo::na.locf(zoo::na.locf(
+                   zoo::na.approx(x, na.rm = FALSE),
                    na.rm = FALSE), na.rm = FALSE, fromLast = TRUE)
            }
            )

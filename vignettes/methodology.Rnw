@@ -490,7 +490,7 @@ However, the above approach is not ideal.  The problem lies in the fact that com
 
 With cross-validation, the observed data are split into $k$ different groups (often $k=10$, and this is the default for this package as well).  Then, for each group $i$, we build a model using all of the observed data except for those in group $i$ and we measure how well this model estimates the data in group $i$.  If we average this error across all $k$ groups, we get a measure for how well this model predicts on our particular dataset.  We perform this cross-validation error estimation for each of our different models, and then we compute model weights via
 
-$$w_i = 1/e_i / \sum_{j = 1}^n 1/e_j$$
+$$w_i = \left(1/e_i\right) / \sum_{j = 1}^n \left(1/e_j\right)$$
 
 The formula here is the same as the one above, but now the errors are the average cross-validation errors instead of the errors on the training set.
 

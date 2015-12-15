@@ -30,6 +30,8 @@
 ##' 
 ##' @export
 ##' 
+##' @import ggplot2
+##' 
 
 plotEnsemble = function(data, modelFits, modelWeights, ensemble,
                         imputationParameters, returnFormat = "faceted"){
@@ -75,7 +77,7 @@ plotEnsemble = function(data, modelFits, modelWeights, ensemble,
     nModels = length(modelNames)
     toPlotModels = cbind(toPlotModels,
             toPlot[, c("year", imputationParameters$byKey), with = FALSE])
-    toPlotModels = data.table:::melt.data.table(data = toPlotModels,
+    toPlotModels = data.table::melt.data.table(data = toPlotModels,
                     id.vars = c("year", imputationParameters$byKey))
     setnames(toPlotModels, "value", "modelFit")
     toPlotModels[, year := as.numeric(year)]
@@ -88,7 +90,7 @@ plotEnsemble = function(data, modelFits, modelWeights, ensemble,
                   colnames(toPlotWeights) := 1e-8]
     toPlotWeights = cbind(toPlotWeights,
             toPlot[, c(imputationParameters$byKey, "year"), with = FALSE])
-    toPlotWeights = data.table:::melt.data.table(data = toPlotWeights,
+    toPlotWeights = data.table::melt.data.table(data = toPlotWeights,
                     id.vars = c("year", imputationParameters$byKey))
     setnames(toPlotWeights, "value", "modelWeight")
     toPlotModels = merge(toPlotModels, toPlotWeights,
@@ -124,7 +126,7 @@ plotEnsemble = function(data, modelFits, modelWeights, ensemble,
                                                 shape = imputedObservation,
                                                 fill = imputedObservation)) +
                   facet_wrap(as.formula(paste("~", paste(imputationParameters$byKey,
-                                                 collapse = "+"))), scale = "free") +
+                                                 collapse = "+"))), scales = "free") +
                   scale_size_continuous(range = c(.5, 2)) +
                   scale_color_manual(values = c("black", "black", plotColors),
                                      limits = c("Data", "Ensemble", modelNames)) +

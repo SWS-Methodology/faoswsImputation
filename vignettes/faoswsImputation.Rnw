@@ -5,7 +5,7 @@
 \usepackage[sc]{mathpazo}
 \usepackage{geometry}
 \geometry{verbose,tmargin=2.5cm,bmargin=2.5cm,lmargin=2.5cm,rmargin=2.5cm}
-\setcounter{secnumdepth}{2}
+\setcounter{secnumdepth}{2} 
 \setcounter{tocdepth}{2}
 \usepackage{breakurl}
 \usepackage{hyperref}
@@ -54,16 +54,17 @@ series data in the Statistical Working System}
 }
 
 \begin{document}
+%\SweaveOpts{concordance=TRUE}
 
 <<setup, include=FALSE, cache=FALSE>>=
 library(knitr)
 opts_chunk$set(fig.path='figure/', fig.align='center', fig.show='hold',
                warning=FALSE, message=FALSE, error=FALSE, tidy=FALSE, 
-               results='markup', eval=TRUE, echo=TRUE, cache=FALSE, dpi=200)
+               results='markup', eval=TRUE, echo=TRUE, cache=FALSE, dpi=200,
+               concordance=TRUE)
 options(replace.assign=TRUE,width=80)
 assign("depthtrigger", 10, data.table:::.global)
 @ 
-
 
 \section{Setup}
 
@@ -73,13 +74,8 @@ Before we begin, we will need to load the required libraries
 ## Load libraries
 library(faoswsImputation)
 library(faoswsUtil)
+library(faoswsFlag)
 library(data.table)
-@
-
-Additionally, we'll load the production library for an example dataset
-
-<<>>=
-library(faoswsProduction)
 @
 
 To illustrate the functionality of the package, we take the Okra data
@@ -88,12 +84,14 @@ a \textit{data.table} object. This is also the default when data are
 queried from the API of the Statistical Working System (SWS).
 
 <<read-data, results='markup'>>=
-str(okrapd)
+file = system.file("extdata", "okra.csv", package = "faoswsImputation")
+okra = fread(input = file)
+str(okra)
 @
 
-Note: the okrapd dataset is a good example of the data available in the SWS.
+Note: the okra dataset is a good example of the data available in the SWS.
 However, as such, the column names aren't very clear.  As a quick explanation,
-5312 refers to area harvested, 5416 refers to yield, and 5510 refers to
+5312 refers to area harvested, 5421 refers to yield, and 5510 refers to
 production.  Each variable has three columns for it's value and the two status
 flags.
 
@@ -137,7 +135,7 @@ convert the previously imputed values to NA
 and the flags from previous imputations will be set to the missing flag value.
 
 <<remove-prior-imputation>>=
-okraProcessed = copy(okrapd)
+okraProcessed = copy(okra)
 
 ## Removing prior imputation for production
 table(okraProcessed$flagObservationStatus_measuredElement_5510)
@@ -164,16 +162,16 @@ removeImputation(data = okraProcessed,
 table(okraProcessed$flagObservationStatus_measuredElement_5312)
 
 ## Removing prior imputation for yield
-table(okraProcessed$flagObservationStatus_measuredElement_5416)
+table(okraProcessed$flagObservationStatus_measuredElement_5421)
 removeImputation(data = okraProcessed,
-                 value = "Value_measuredElement_5416",
+                 value = "Value_measuredElement_5421",
                  observationFlag =
-                     "flagObservationStatus_measuredElement_5416",
-                 methodFlag = "flagMethod_measuredElement_5416",
+                     "flagObservationStatus_measuredElement_5421",
+                 methodFlag = "flagMethod_measuredElement_5421",
                  imputedFlag = "E",
                  missingObservationFlag = "M",
                  missingMethodFlag = "u")
-table(okraProcessed$flagObservationStatus_measuredElement_5416)
+table(okraProcessed$flagObservationStatus_measuredElement_5421)
 @ 
 
 After removing prior imputations, the next step is to replace zero
@@ -199,8 +197,8 @@ production and area harvested:
 
 <<more-remove-zero-values>>=
 remove0M(data = okraProcessed,
-         value = "Value_measuredElement_5416",
-         flag = "flagObservationStatus_measuredElement_5416",
+         value = "Value_measuredElement_5421",
+         flag = "flagObservationStatus_measuredElement_5421",
          naFlag = "M")
 
 remove0M(data = okraProcessed,
@@ -217,15 +215,15 @@ countries which contain no non-missing observations.
 
 <<remove-info>>=
 okraProcessed[geographicAreaM49 == 245,
-              .(Value_measuredElement_5416,
-                flagObservationStatus_measuredElement_5416)]
+              .(Value_measuredElement_5421,
+                flagObservationStatus_measuredElement_5421)]
 removeNoInfo(data = okraProcessed,
-             value = "Value_measuredElement_5416",
-             observationFlag = "flagObservationStatus_measuredElement_5416",
+             value = "Value_measuredElement_5421",
+             observationFlag = "flagObservationStatus_measuredElement_5421",
              byKey = "geographicAreaM49")
 okraProcessed[geographicAreaM49 == 245,
-              .(Value_measuredElement_5416,
-                flagObservationStatus_measuredElement_5416)]
+              .(Value_measuredElement_5421,
+                flagObservationStatus_measuredElement_5421)]
 @ 
 
 Note for advanced users: All other remove* functions from the utils package
@@ -238,23 +236,25 @@ assign the data.table object in an environment (by default, the calling
 environment of removeNoInfo).  This should be changed once the \pkg{data.table}
 package adds this functionality.
 
-Next, we must create a list that contains specific parameters on how the
-processing should be performed.
-
-<<processingParams>>=
-processingParams = defaultProcessingParameters()
-processingParams
-@
-
-Now, we will pass processingParams through all of the individual processing
-functions.  The function \code{processProductionDomain} is a wrapper that
-executes all the data processing above.
-
-<<processProductionDomain>>=
-okraProcessed = copy(okrapd)
-processProductionDomain(data = okraProcessed,
-                        processingParameters = processingParams)
-@ 
+%' COMMENT BELOW OUT!  DOESN'T WORK WITHOUT faoswsProduction!!!
+%' 
+%' Next, we must create a list that contains specific parameters on how the
+%' processing should be performed.
+%' 
+%' <<processingParams>>=
+%' processingParams = defaultProcessingParameters()
+%' processingParams
+%' @
+%' 
+%' Now, we will pass processingParams through all of the individual processing
+%' functions.  The function \code{processProductionDomain} is a wrapper that
+%' executes all the data processing above.
+%' 
+%' <<processProductionDomain>>=
+%' okraProcessed = copy(okra)
+%' processProductionDomain(data = okraProcessed,
+%'                         processingParameters = processingParams)
+%' @ 
 
 \subsection{Imputation}
 
@@ -272,7 +272,7 @@ of the data (having too many countries can clog up some of the later plots).
 
 <<imputationParams>>=
 okraProcessed = okraProcessed[geographicAreaM49 <= 60, ]
-imputationParams = defaultImputationParameters(variable = "yield")
+imputationParams = defaultImputationParameters(variable = 5421)
 sapply(imputationParams, class)
 @
 
@@ -381,16 +381,15 @@ area harvested both exist.  This is because we have the relationship:
 $$Y = P / A$$
 where $Y$ is yield, $P$ is production, and $A$ is the area harvested.
 If no value for area harvested is available, then the function proceeds to
-impute the remaining production values with ensemble learning.  Let's use
-some different models this time, just for the purpose of showing what's
-available.
+impute the remaining production values with ensemble learning.  This balancing
+is handled in the faoswsProduction package (which depends on this imputation
+package).  To avoid dealing with strange dependency issues, we'll simply ignore
+this relationship here.
 
 <<impute-production>>=
-balanceProduction(data = okraProcessed,
-                  processingParameters = processingParams)
 imputationParams = defaultImputationParameters("production")
 imputationParams$ensembleModels =
-    imputationParams$ensembleModels[4:9]
+    imputationParams$ensembleModels[5:9]
 names(imputationParams$ensembleModels)
 imputeVariable(data = okraProcessed,
                imputationParameters = imputationParams)
@@ -417,36 +416,38 @@ to extrapolate more than one observation away from the data.  For most of the
 examples provided here, those three models all failed to fit to the data, and
 so imputations were not available.
 
-Finally, we can balance the area harvested after both production and
-yield have been imputed.
-
-<<balance-area-harvested>>=
-balanceAreaHarvested(data = okraProcessed,
-                     processingParameters = processingParams)
-@ 
-
-
-The full procedure outlined in this section can be performed by a
-single function \code{imputeProductionDomain}.  You will need to specify three
-parameter lists: the processing parameters (1) and the imputation parameters
-for both yield and production (2).
-
-
-<<one-step-imputation>>=
-yieldParams = defaultImputationParameters("yield")
-yieldParams$ensembleModels = yieldParams$ensembleModels[1:3]
-productionParams = defaultImputationParameters("production")
-productionParams$ensembleModels = productionParams$ensembleModels[1:3]
-okraProcessed = okrapd[geographicAreaM49 <= 55, ]
-system.time(
-    {        
-        imputeProductionDomain(data = okraProcessed,
-                               processingParameters = processingParams,
-                               yieldImputationParameters = yieldParams,
-                               productionImputationParameters =
-                                   productionParams)
-    })
-@ 
+%' COMMENT BELOW OUT!  DOESN'T WORK WITHOUT faoswsProduction!!!
+%' 
+%' Finally, we can balance the area harvested after both production and
+%' yield have been imputed.
+%' 
+%' <<balance-area-harvested>>=
+%' balanceAreaHarvested(data = okraProcessed,
+%'                      processingParameters = processingParams)
+%' @ 
+%' 
+%' 
+%' The full procedure outlined in this section can be performed by a
+%' single function \code{imputeProductionDomain}.  You will need to specify three
+%' parameter lists: the processing parameters (1) and the imputation parameters
+%' for both yield and production (2).
+%' 
+%' 
+%' <<one-step-imputation>>=
+%' yieldParams = defaultImputationParameters(5421)
+%' yieldParams$ensembleModels = yieldParams$ensembleModels[1:3]
+%' productionParams = defaultImputationParameters("production")
+%' productionParams$ensembleModels = productionParams$ensembleModels[1:3]
+%' okraProcessed = okra[geographicAreaM49 <= 55, ]
+%' system.time(
+%'     {        
+%'         imputeProductionDomain(data = okraProcessed,
+%'                                processingParameters = processingParams,
+%'                                yieldImputationParameters = yieldParams,
+%'                                productionImputationParameters =
+%'                                    productionParams)
+%'     })
+%' @ 
 
 
 \section{Ensemble model}
@@ -495,7 +496,7 @@ First, we have to make sure we've correctly labeled any missing values as NA
 and not 0:
 
 <<ensemble-illustration>>=
-bahrainExample = okrapd[areaName == "Bahrain", ]
+bahrainExample = okra[areaName == "Bahrain", ]
 bahrainExample[1:4, .(areaName, timePointYears,
                       production = Value_measuredElement_5510,
                       productionFlag =
@@ -562,7 +563,7 @@ weight that may be given to a model or a custom error function for choosing
 weights.  See defaultImputationParameters for a description of all the options.
 
 <<ensemble-imputation, dpi=100>>=
-bahamasExample = okrapd[areaName == "Bahamas", ]
+bahamasExample = okra[areaName == "Bahamas", ]
 remove0M(data = bahamasExample, value = "Value_measuredElement_5510",
          flag = "flagObservationStatus_measuredElement_5510")
 ensembleFit = ensembleImpute(data = bahamasExample,
@@ -578,15 +579,13 @@ The order of this section is alphabetical, not by complexity.  Let's first set
 up a dataset to use for this example, and we'll set
 
 <<example-dataset>>=
-exampleData = okrapd[geographicAreaM49 < 30, ]
-processProductionDomain(exampleData,
-        processingParameters = defaultProcessingParameters())
-imputationParameters = defaultImputationParameters("yield")
+exampleData = okra[geographicAreaM49 < 60, ]
+imputationParameters = defaultImputationParameters(5421)
 imputationParameters$newImputationColumn = "test"
 invisible(exampleData[timePointYears %in% 2005:2007 &
                           geographicAreaM49 == "91",
-                      c("Value_measuredElement_5416",
-                        "flagObservationStatus_measuredElement_5416") :=
+                      c("Value_measuredElement_5421",
+                        "flagObservationStatus_measuredElement_5421") :=
                           list(NA, "M")])
 @
 
@@ -786,22 +785,22 @@ The defaultMixedModel is a more complex model that's fit to global datasets
 to run some analyses with this model:
 
 <<fig.height=3>>=
-mixedModelData = okrapd[geographicAreaM49 < 100, ]
-processProductionDomain(mixedModelData,
-        processingParameters = defaultProcessingParameters())
+mixedModelData = okra[geographicAreaM49 < 100, ]
+# processProductionDomain(mixedModelData,
+#         processingParameters = defaultProcessingParameters())
 updateMissingFlags = function(data, value, flag, naFlag = "M"){
     missingIndex = which(is.na(data[[value]]))
     invisible(data[missingIndex, `:=`(c(flag), list(naFlag))])
 }
-updateMissingFlags(data = mixedModelData, value = "Value_measuredElement_5416",
-         flag = "flagObservationStatus_measuredElement_5416")
+updateMissingFlags(data = mixedModelData, value = "Value_measuredElement_5421",
+         flag = "flagObservationStatus_measuredElement_5421")
 @
 
 Now, let's run the ensemble imputation with the default imputation parameters.
 This example uses the \pkg{lme4} package to fit a mixed model.
 
 <<fig.height=6>>=
-newParameters = defaultImputationParameters("yield")
+newParameters = defaultImputationParameters(5421)
 newParameters$newImputationColumn = "test"
 newParameters$estimateNoData = TRUE
 model = ensembleModel(model = defaultMixedModel, extrapolationRange = Inf,
@@ -823,13 +822,13 @@ example, we just made up arbitrary regions.
 
 <<fig.height=6>>=
 invisible({
-    mixedModelData[geographicAreaM49 == "66", Value_measuredElement_5416 := NA]
+    mixedModelData[geographicAreaM49 == "66", Value_measuredElement_5421 := NA]
     mixedModelData[geographicAreaM49 == "66",
-               flagObservationStatus_measuredElement_5416 := "M"]
+               flagObservationStatus_measuredElement_5421 := "M"]
     mixedModelData[,region := factor(ifelse(geographicAreaM49 < 15, 1,
                                      ifelse(geographicAreaM49 < 50, 2, 3)))]
 })
-formals(defaultMixedModel)$modelFormula = Value_measuredElement_5416 ~
+formals(defaultMixedModel)$modelFormula = Value_measuredElement_5421 ~
     timePointYears*region + (timePointYears|geographicAreaM49/region)
 hierarchical = ensembleModel(model = defaultMixedModel, level = "global",
                              extrapolationRange = Inf)

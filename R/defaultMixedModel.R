@@ -1,4 +1,3 @@
-##' Mixed Model for Imputation
 ##'
 ##' This function imputes missing values with a linear mixed model.
 ##' 
@@ -55,7 +54,7 @@ defaultMixedModel = function(data, df = 1, weights = NULL, modelFormula = NULL,
     if(is.null(modelFormula)){
         modelFormula = as.formula(paste0(
             imputationParameters$imputationValueColumn,
-            "~ -1 + (1 + bs(", imputationParameters$yearValue,
+            "~ -1 + (1 + splines::bs(", imputationParameters$yearValue,
             ", df = ", df, ", degree = 1)|byKey)"))
         model = try(
             lme4::lmer(formula = modelFormula,

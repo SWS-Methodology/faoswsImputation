@@ -12,12 +12,7 @@ This object is used to determine which countries and times should be
 queried from the World Bank dataset.}
 
 \item{imputationParameters}{A list of the parameters for the imputation
-algorithms.  See defaultImputationParameters() for a starting point.
-##}
-
-\item{covariates}{A character vector of the covariates which should be
-##pulled.  Acceptable values are currently "gdpPerCapita", "gdpPPP",
-##"pavedRoads", "temperature", and "precipitation".}
+algorithms.  See defaultImputationParameters() for a starting point.}
 }
 \value{
 A data.table containing columns geographicAreaM49 and

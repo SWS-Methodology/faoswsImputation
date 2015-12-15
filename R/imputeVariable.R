@@ -11,6 +11,8 @@
 ##'   
 ##' @export
 ##' 
+##' @import data.table
+##' 
 
 imputeVariable = function(data, imputationParameters){
 

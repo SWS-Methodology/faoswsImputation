@@ -6,8 +6,8 @@
 ##'
 ##' @docType data
 ##' @keywords datasets
-##' @name okrapd
-##' @usage data(okrapd)
-##' @format A data.table object with 912 rows and 14 variables
+##' @name okra
+##' @usage data(okra)
+##' @format A csv file with 912 rows and 14 variables
 ##'
 NULL
