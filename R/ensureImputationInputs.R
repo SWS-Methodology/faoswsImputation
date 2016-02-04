@@ -93,6 +93,12 @@ ensureImputationInputs = function(data, imputationParameters){
              "imputationParameters$byKey and make sure that the input ",
              "dataset has at most one observation for each unique ",
              "combination of the byKey variables and the time variable.")
+    
+    if(any(data[[p$imputationValueColumn]] < 0)){
+        warning("Negative values observed in the data and this will cause ",
+                "problems will some default models ","
+                (exponential, logistic, etc.)!")
+    }
 
     ############################# Flag checks #############################
     

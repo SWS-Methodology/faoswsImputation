@@ -38,7 +38,7 @@ buildEnsembleModel = function(data, imputationParameters, processingParameters){
         data[[imputationParameters$imputationValueColumn]])
     flagMissingIndex = (data[[imputationParameters$imputationFlagColumn]] ==
                             imputationParameters$missingFlag)
-    
+
     # Ensure missing values agree with missing flags
     if(!all(valueMissingIndex == flagMissingIndex)){
         cat("Values that are NA: ", sum(valueMissingIndex), "\n")
@@ -50,8 +50,14 @@ buildEnsembleModel = function(data, imputationParameters, processingParameters){
             "Model", 1:length(imputationParameters$ensembleModels), sep = "_")
     if(!any(is.na(data[[imputationParameters$imputationValueColumn]]))){
         warning("No missing values in data[[imputationValueColumn]].",
-        "Returning data[[imputationValueColumn]]")
-        return(data[[imputationParameters$imputationValueColumn]])
+        "Returning empty data.tables")
+        fit = data.table(fit = 0, variance = 0, timePointYears = 0,
+                         geographicAreaM49 = "0", measuredItemCPC = "0")
+        fit = fit[-1, ]
+        errors = data.table(geographicAreaM49 = "0")
+        errors[, names(imputationParameters$ensembleModels) := 0]
+        errors = errors[-1, ]
+        return(list(fit = fit, errors = errors))
     }
     if(min(data[, .N, by = c(processingParams$byKey)]$N) == 1){
         print(data[, .N, by = c(processingParams$byKey)][N == 1, ])
@@ -73,7 +79,7 @@ buildEnsembleModel = function(data, imputationParameters, processingParameters){
                                 imputationParameters$newImputationColumn)
     }
     newVarianceColumn = "ensembleVariance"
-    
+
     ## Order data by byKey and then by year
     setkeyv(x = data, cols = c(imputationParameters$byKey,
                                imputationParameters$yearValue))
