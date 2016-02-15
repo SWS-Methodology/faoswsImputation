@@ -30,10 +30,10 @@ buildEnsembleModel = function(data, imputationParameters, processingParameters){
         ensureImputationInputs(data = data,
                                imputationParameters = imputationParameters)
 
-    setkeyv(x = data, cols = c(processingParams$byKey,
-                               processingParams$yearValue))
+    setkeyv(x = data, cols = c(processingParameters$byKey,
+                               processingParameters$yearValue))
     processProductionDomain(data = data,
-                            processingParameters = processingParams)
+                            processingParameters = processingParameters)
     valueMissingIndex = is.na(
         data[[imputationParameters$imputationValueColumn]])
     flagMissingIndex = (data[[imputationParameters$imputationFlagColumn]] ==
@@ -59,8 +59,8 @@ buildEnsembleModel = function(data, imputationParameters, processingParameters){
         errors = errors[-1, ]
         return(list(fit = fit, errors = errors))
     }
-    if(min(data[, .N, by = c(processingParams$byKey)]$N) == 1){
-        print(data[, .N, by = c(processingParams$byKey)][N == 1, ])
+    if(min(data[, .N, by = c(processingParameters$byKey)]$N) == 1){
+        print(data[, .N, by = c(processingParameters$byKey)][N == 1, ])
         stop("Only one data point in time series for above data!")
     }
 
