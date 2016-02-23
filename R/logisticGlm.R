@@ -24,8 +24,12 @@ logisticGlm = function(x){
     #If all values are 0 or NA's, then return no prediction
     if(is.na(xmax) | xmax <= 0)
         return(as.numeric(rep(NA, length(x))))
-    x.scaled = x/xmax    
-    model = glm(formula = x.scaled ~ time, family="binomial")
+    x.scaled = x/xmax 
+    ## Suppress warnings from the glm logistic fit, since we don't have a true
+    ## binomial and may have non-integer values.
+    suppressWarnings({
+        model = glm(formula = x.scaled ~ time, family="binomial")
+    })
     midpoint = - coef(model)[1]/coef(model)[2]
     logisticFit =
         predict(model, 
