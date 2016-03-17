@@ -70,6 +70,8 @@
 ##'   though, is FALSE: one must set this option if it is desired to be used.
 ##' }
 ##' 
+##' @import faoswsFlag
+##' 
 ##' @export
 ##' 
 
@@ -87,7 +89,7 @@ defaultImputationParameters = function(variable = NULL){
          missingFlag = "M",
          imputationFlag = "I",
          newMethodFlag = "e",
-         flagTable = faoswsFlagTable)
+         flagTable = faoswsFlag::faoswsFlagTable)
     out$flagTable$flagObservationStatus =
         as.character(out$flagTable$flagObservationStatus)
     out$variable = variable

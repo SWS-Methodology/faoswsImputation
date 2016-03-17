@@ -31,6 +31,9 @@
 ##' 
 ##' @export
 ##' 
+##' @importFrom splines bs
+##' @importFrom lme4 lmer
+##' 
 
 defaultMixedModel = function(data, df = 1, weights = NULL, modelFormula = NULL,
                              imputationParameters){

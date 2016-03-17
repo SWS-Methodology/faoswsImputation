@@ -32,7 +32,7 @@ buildEnsembleModel = function(data, imputationParameters, processingParameters){
 
     setkeyv(x = data, cols = c(processingParameters$byKey,
                                processingParameters$yearValue))
-    processProductionDomain(data = data,
+    data = processProductionDomain(data = data,
                             processingParameters = processingParameters)
     valueMissingIndex = is.na(
         data[[imputationParameters$imputationValueColumn]])

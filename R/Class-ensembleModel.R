@@ -55,13 +55,15 @@ checkEnsembleModel = function(object){
 ##'     }
 ##' }
 ##' 
+##' @import methods
+##' 
 ##' @export ensembleModel
 ##' 
 
-ensembleModel = setClass(Class = "ensembleModel",
-    representation = representation(model = "function",
+ensembleModel = methods::setClass(Class = "ensembleModel",
+    representation = methods::representation(model = "function",
                                     extrapolationRange = "numeric",
                                     level = "character"),
-    prototype(extrapolationRange = 0, level = "local"),
+    methods::prototype(extrapolationRange = 0, level = "local"),
     validity = checkEnsembleModel,
     package = "faoswsImputation")

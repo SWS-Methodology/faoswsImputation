@@ -7,6 +7,8 @@
 ##' @return No value is returned, but errors are thrown if the input parameters
 ##' are not as expected.
 ##' 
+##' @importFrom faoswsUtil checkObservationFlag
+##' 
 ##' @export
 ##' 
 
@@ -94,7 +96,7 @@ ensureImputationInputs = function(data, imputationParameters){
              "dataset has at most one observation for each unique ",
              "combination of the byKey variables and the time variable.")
     
-    if(any(data[[p$imputationValueColumn]] < 0)){
+    if(any(data[[p$imputationValueColumn]] < 0, na.rm = TRUE)){
         warning("Negative values observed in the data and this will cause ",
                 "problems will some default models ","
                 (exponential, logistic, etc.)!")
@@ -123,7 +125,8 @@ ensureImputationInputs = function(data, imputationParameters){
     }
     
     ## Ensure flags of flagTable are valid
-    stopifnot(checkObservationFlag(p$flagTable[["flagObservationStatus"]]))
+    stopifnot(faoswsUtil::checkObservationFlag(
+        p$flagTable[["flagObservationStatus"]]))
     
     ### Globally assign ensuredImputationData so data will not need to be ensured again
     ensuredImputationData <<- TRUE
