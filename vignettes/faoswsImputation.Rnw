@@ -251,7 +251,7 @@ package adds this functionality.
 %' 
 %' <<processProductionDomain>>=
 %' okraProcessed = copy(okra)
-%' processProductionDomain(data = okraProcessed,
+%' okraProcessed = processProductionDomain(data = okraProcessed,
 %'                         processingParameters = processingParams)
 %' @ 
 
@@ -785,7 +785,7 @@ to run some analyses with this model:
 
 <<fig.height=3>>=
 mixedModelData = okra[geographicAreaM49 < 100, ]
-# processProductionDomain(mixedModelData,
+# mixedModelData = processProductionDomain(mixedModelData,
 #         processingParameters = defaultProcessingParameters())
 updateMissingFlags = function(data, value, flag, naFlag = "M"){
     missingIndex = which(is.na(data[[value]]))
