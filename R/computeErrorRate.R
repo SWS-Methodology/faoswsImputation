@@ -25,5 +25,5 @@ computeErrorRate = function(data, fit, imputationParameters){
     } else {
         er = (x - fit)
     }
-    abs(er)
+    as.numeric(abs(er))
 }
