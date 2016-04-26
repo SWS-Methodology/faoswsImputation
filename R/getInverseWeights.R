@@ -46,7 +46,10 @@ getInverseWeights = function(data, fits, imputationParameters){
     ## that happens, we'll get a missing value (NA) for that error.  To work
     ## around this, assign that NA to the highest error for that observation.
     ## In other words, assumme the model that failed did as poor as possible.
-    error[, error := ifelse(is.na(error), max(error, na.rm = TRUE), error),
+    error[, recoverError := ifelse(sum(is.na(error)) == .N, 1/.N,
+                                   max(error, na.rm = TRUE)),
+          by = c(imputationParameters$byKey, "year")]
+    error[, error := ifelse(is.na(error), recoverError, error),
           by = c(imputationParameters$byKey, "year")]
     ## Errors should never be infinity, so this signals some sort of problem:
     if(error[!(missingValue), max(abs(error))] == Inf){
