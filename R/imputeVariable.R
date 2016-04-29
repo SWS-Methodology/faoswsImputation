@@ -41,7 +41,7 @@ imputeVariable = function(data, imputationParameters){
     ##                 observation with the only observed
     ##                 value. Although not a good practice but
     ##                 explaination is offered in issue 8.
-    data = imputeSingleObservation(data)
+    imputeSingleObservation(data, imputationParameters)
     
     missingIndex = is.na(
         data[, get(imputationParameters$imputationValueColumn)])

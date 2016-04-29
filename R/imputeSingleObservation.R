@@ -14,13 +14,11 @@
 ##' 
 
 imputeSingleObservation = function(data, imputationParameters){
-    dataCopy = copy(data)
     param = imputationParameters
-    dataCopy[, `:=`("obsCount",
+    data[, `:=`("obsCount",
                     sum(!is.na(.SD[[param$imputationValueColumn]]))),
              by = c(param$byKey)]
-
-    dataCopy[obsCount == 1,
+    data[obsCount == 1,
              `:=`(c(param$imputationValueColumn,
                   param$imputationFlagColumn,
                   param$imputationMethodColumn),
@@ -32,8 +30,6 @@ imputeSingleObservation = function(data, imputationParameters){
                                which(.SD[[param$imputationFlagColumn]] ==
                                      param$missingFlag), param$newMethodFlag))),
              by = c(param$byKey)]
-    dataCopy[, `:=`(obsCount, NULL)]
-    dataCopy
+    data[, `:=`(obsCount, NULL)]
+    data
 }
-             
-    
