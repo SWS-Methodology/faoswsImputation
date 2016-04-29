@@ -36,6 +36,12 @@ imputeVariable = function(data, imputationParameters){
                                 imputationParameters$newImputationColumn)
     }
     newVarianceColumn = "ensembleVariance"
+
+    ## NOTE (Michael): We impute variables which has only single
+    ##                 observation with the only observed
+    ##                 value. Although not a good practice but
+    ##                 explaination is offered in issue 8.
+    data = imputeSingleObservation(data)
     
     missingIndex = is.na(
         data[, get(imputationParameters$imputationValueColumn)])
