@@ -60,7 +60,7 @@ Below is a description of the parameters:
   weights.
   \item variable: The name of the variable being imputed, either "seed",
   "yield", or "production".
-  \item imputationValueColumn: The column name of the value to be imputed. 
+  \item imputationValueColumn: The column name of the value to be imputed.
   \item imputationFlagColumn: The column name of the observation flag for
   the imputed variable.
   \item imputationMethodColumn: The column name of the method flag for the
