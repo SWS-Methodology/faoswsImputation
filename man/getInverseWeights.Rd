@@ -21,7 +21,7 @@ group, as well as a few other (currently unused) statistics.
 }
 \description{
 Weights used to construct the final ensemble from the individual models are
-computed by comparing the errors.  For each model, the errors are computed 
+computed by comparing the errors.  For each model, the errors are computed
 (simply comparing observed values in data to fitted values in fits) and
 then the inverse (i.e. 1/) these errors are used as the weights (after
 rescaling to 1).  For example, if three models have errors of 1, 2, and 3

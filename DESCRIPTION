@@ -7,10 +7,10 @@ Authors@R: c(person("Joshua M.", "Browning", role = c("aut", "cre"), email = "jo
 Maintainer: Joshua M. Browning <joshua.browning@fao.org>
 Description: This package provides all the functions to perform imputation of
     variables for the FAO production domain.
-URL: https://svn.fao.org/projects/SWS/RModules/faoswsImputation/
-License: GPL (>= 3)
+URL: https://github.com/SWS-Methodology/faoswsImputation
+License: FAO
 Imports:
-    methods (>= 3.2.3),
+    methods,
     lme4 (>= 1.1-7),
     reshape2 (>= 1.4),
     earth (>= 3.2-7),
