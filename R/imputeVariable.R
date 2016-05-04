@@ -44,12 +44,14 @@ imputeVariable = function(data, imputationParameters){
     imputeSingleObservation(data, imputationParameters)
     missingIndex = is.na(
         data[, get(imputationParameters$imputationValueColumn)])
-    imputation = ensembleImpute(data = data,
+    ensemble = ensembleImpute(data = data,
                                 imputationParameters = imputationParameters)
-    imputed = which(!is.na(imputation$ensemble))
-    data[imputed,
-         c(newValueColumn, newVarianceColumn) :=
-             imputation[imputed, ]]
+    if(!is.null(nrow(ensemble))){
+        imputed = which(!is.na(ensemble$ensemble))
+        data[imputed,
+             c(newValueColumn, newVarianceColumn) :=
+                 ensemble[imputed, ]]
+    }
 
     imputedIndex = missingIndex & !is.na(data[[newValueColumn]])
     invisible(data[imputedIndex,
