@@ -32,5 +32,12 @@ computeEnsemble = function(fits, weights, errors){
         fit = apply(weightedFit, 1, function(x) sum(x, na.rm = !all(is.na(x)))),
         variance = apply(errorFit, 1, sum, na.rm = TRUE)
     )
+
+    ## Test whether any model give negative imputation issue #13
+    modelMin = apply(fitsMatrix, 2, min, na.rm = TRUE)
+    if(any(modelMin < 0)){
+        negMod = which(modelMin < 0)
+        stop("Imputation gave negative result")
+    }
     ensemble
 }
