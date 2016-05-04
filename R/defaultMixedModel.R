@@ -1,6 +1,6 @@
 ##'
 ##' This function imputes missing values with a linear mixed model.
-##' 
+##'
 ##' The default functionality of this model is to fit a linear mixed model to
 ##' the data.  time and intercept are assumed to be fixed effects, and the
 ##' random effects are specified by the byKey parameter of
@@ -10,7 +10,7 @@
 ##' user has specified) and time.  However, the intercept and slope of this
 ##' fit varies from country to country, and so country is considered a random
 ##' effect.
-##' 
+##'
 ##' Moreover, the model fit is not a simple linear regression, but rather a
 ##' spline regression (using the bs function from the \pkg{splines} package).
 ##' The fit of this model will therefore depend on the number of degrees of
@@ -25,19 +25,19 @@
 ##' formula, as it will be passed to lmer (R's mixed model function).
 ##' @param imputationParameters A list of the parameters for the imputation
 ##' algorithms.  See defaultImputationParameters() for a starting point.
-##' 
+##'
 ##' @return Returns a vector of the estimated/imputed values.  If a value
 ##' existed in the original data, then an NA is returned in that location.
-##' 
+##'
 ##' @export
-##' 
+##'
 ##' @importFrom splines bs
 ##' @importFrom lme4 lmer
-##' 
+##'
 
 defaultMixedModel = function(data, df = 1, weights = NULL, modelFormula = NULL,
                              imputationParameters){
-    
+
     ### Data Quality Checks
     if(!exists("ensuredImputationData") || !ensuredImputationData)
         ensureImputationInputs(data = data,
@@ -72,17 +72,25 @@ defaultMixedModel = function(data, df = 1, weights = NULL, modelFormula = NULL,
                        REML = FALSE)
             )
     }
-                
+
     if(!inherits(model, "try-error")){
+
+        data[, allMissing :=
+                   all(is.na(get(imputationParameters$imputationValueColumn))),
+             by = byKey]
+        nonMissingIndex = which(!data$allMissing)
         ## Impute the data with lme.
-        modelFit = predict(model, newdata = data, allow.new.levels = TRUE)
+        modelFit = rep(NA, NROW(data))
+        modelFit[nonMissingIndex] =
+            predict(model, newdata = data[nonMissingIndex, ],
+                    allow.new.levels = FALSE)
         modelFit = pmax(modelFit, 0)
     } else {
         modelFit = rep(NA_real_, nrow(data))
     }
-    
+
     if("byKey" %in% colnames(data))
-        data[, byKey := NULL]
+        data[, `:=`(c("byKey", "allMissing"), list(NULL, NULL))]
 
     return(modelFit)
 }

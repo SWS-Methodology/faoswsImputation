@@ -1,18 +1,18 @@
 ##' Function to impute production or yield
-##' 
+##'
 ##' This is a wrapper of the ensemble imputation for the production domain.
-##' 
+##'
 ##' @param data The data.table object containing the data.
-##' @param imputationParameters A list of the parameters for the imputation 
+##' @param imputationParameters A list of the parameters for the imputation
 ##'   algorithms.  See defaultImputationParameters() for a starting point.
-##'   
+##'
 ##' @return This function doesn't return any objects but modifies the underlying
 ##'   data.table that it was passed.
-##'   
+##'
 ##' @export
-##' 
+##'
 ##' @import data.table
-##' 
+##'
 
 imputeVariable = function(data, imputationParameters){
 
@@ -42,12 +42,17 @@ imputeVariable = function(data, imputationParameters){
     ##                 value. Although not a good practice but
     ##                 explaination is offered in issue 8.
     imputeSingleObservation(data, imputationParameters)
-    
     missingIndex = is.na(
         data[, get(imputationParameters$imputationValueColumn)])
-    data[, c(newValueColumn, newVarianceColumn) := 
-             ensembleImpute(data = data,
-                            imputationParameters = imputationParameters)]
+    ensemble = ensembleImpute(data = data,
+                                imputationParameters = imputationParameters)
+    if(!is.null(nrow(ensemble))){
+        imputed = which(!is.na(ensemble$ensemble))
+        data[imputed,
+             c(newValueColumn, newVarianceColumn) :=
+                 ensemble[imputed, ]]
+    }
+
     imputedIndex = missingIndex & !is.na(data[[newValueColumn]])
     invisible(data[imputedIndex,
                    c(newObsFlagColumn, newMethodFlagColumn) :=

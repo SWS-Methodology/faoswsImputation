@@ -6,15 +6,15 @@
 ##' @param errors An error matrix giving the error of each model for each
 ##' observation.  This is used to create an estimate of variability of the
 ##' ensemble for each imputed value.
-##' 
+##'
 ##' @return A vector of length nrow(weights), where each value represents the
 ##' ensemble estimate for that observation.
-##' 
+##'
 ##' @export
-##' 
+##'
 
 computeEnsemble = function(fits, weights, errors){
-    
+
     ## Data quality checks
     ## Rearrange elements of fits if needed
     stopifnot(all(names(fits) %in% names(weights)))
@@ -24,13 +24,20 @@ computeEnsemble = function(fits, weights, errors){
     stopifnot(length(fits) == ncol(weights))
     if(!all(sapply(fits, length) == nrow(weights)))
         stop("Length of fits do not match nrow(weights)!")
-    
+
     fitsMatrix = matrix(unlist(fits), ncol = length(fits))
-    fitsMatrix[is.na(fitsMatrix)] = 0
     weightedFit = fitsMatrix * weights
     errorFit = errors * weights
     ensemble = data.table(
-        fit = apply(weightedFit, 1, sum),
+        fit = apply(weightedFit, 1, function(x) sum(x, na.rm = !all(is.na(x)))),
         variance = apply(errorFit, 1, sum, na.rm = TRUE)
     )
+
+    ## Test whether any model give negative imputation issue #13
+    modelMin = apply(fitsMatrix, 2, min, na.rm = TRUE)
+    if(any(modelMin < 0)){
+        negMod = which(modelMin < 0)
+        stop("Imputation gave negative result")
+    }
+    ensemble
 }

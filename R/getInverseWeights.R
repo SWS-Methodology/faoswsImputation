@@ -1,27 +1,27 @@
 ##' Get Ensemble Weights via Inverse Errors
-##' 
+##'
 ##' Weights used to construct the final ensemble from the individual models are
-##' computed by comparing the errors.  For each model, the errors are computed 
+##' computed by comparing the errors.  For each model, the errors are computed
 ##' (simply comparing observed values in data to fitted values in fits) and
 ##' then the inverse (i.e. 1/) these errors are used as the weights (after
 ##' rescaling to 1).  For example, if three models have errors of 1, 2, and 3
 ##' then the inverse errors are 1, 1/2, and 1/3.  We rescale these weights to
 ##' add to 1 and get 6/11, 3/11, and 2/11.
-##' 
+##'
 ##' @param data The data object containing the observations to impute.
 ##' @param fits A list of the fitted values.  These may be estimated via leave
 ##' one out cross-validation or directly.
 ##' @param imputationParameters A list of the parameters for the imputation
 ##' algorithms.  See defaultImputationParameters() for a starting point.
-##' 
+##'
 ##' @return A data.table containing the weight for each model within each byKey
 ##' group, as well as a few other (currently unused) statistics.
-##' 
+##'
 ##' @export
-##' 
+##'
 
 getInverseWeights = function(data, fits, imputationParameters){
-    
+
     ## Data Quality Checks
     if(!exists("ensuredImputationData") || !ensuredImputationData)
         ensureImputationInputs(data = data,
@@ -61,7 +61,7 @@ getInverseWeights = function(data, fits, imputationParameters){
             "cross-validation models worked.  Have you tried a global model",
             "like defaultMixedModel()?  Or, including a simple model like",
             "defaultMean() (which should fit every dataset well) might work.",
-            "Or, you could also try errorType = 'raw' (although loocv is", 
+            "Or, you could also try errorType = 'raw' (although loocv is",
             "generally preferred).")
     }
     ## If the fit failed, we can't use this model.  Assign error of Inf.  To
@@ -71,11 +71,11 @@ getInverseWeights = function(data, fits, imputationParameters){
     error[, modelFailed := any(is.na(fit) & !missingValue),
           by = c(imputationParameters$byKey, "model")]
     error[(modelFailed), error := NA]
-    
+
     ## Create the weights data.table using the errors
     ## Aggregate the errors using the provided error function, applying to each
     ## byKey group and model individually.
-    weights = error[!(missingValue), imputationParameters$errorFunction(error),
+    weights = error[, as.numeric(imputationParameters$errorFunction(error)),
                     by = c(imputationParameters$byKey, "model")]
     ## Check if error function is MSE.  If not, raise a warning.
     ## The only way I could think of to test if the error function is MSE is
@@ -83,7 +83,7 @@ getInverseWeights = function(data, fits, imputationParameters){
     if(imputationParameters$errorFunction(1:10) != 38.5)
         warning("Using a different error function than mean-squared error ",
                 "will create invalid variance estimates.")
-    
+
     setnames(weights, old = "V1", new = "modelError")
     if(imputationParameters$errorType == "raw"){
         ## Perfect fits can give really small errors but actually be overfitting

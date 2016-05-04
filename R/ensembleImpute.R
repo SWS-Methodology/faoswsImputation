@@ -8,7 +8,7 @@
 ##' algorithms.  See defaultImputationParameters() for a starting point.
 ##'
 ##' @export
-##' 
+##'
 
 ensembleImpute = function(data, imputationParameters){
 
@@ -34,11 +34,11 @@ ensembleImpute = function(data, imputationParameters){
         "Returning data[[imputationValueColumn]]")
         return(data[[imputationParameters$imputationValueColumn]])
     }
-    
+
     ## Order data by byKey and then by year
     setkeyv(x = data, cols = c(imputationParameters$byKey,
                                imputationParameters$yearValue))
-    
+
     ## Build the ensemble
     ensemble = data[[imputationParameters$imputationValueColumn]]
     missIndex = is.na(ensemble)
@@ -60,7 +60,7 @@ ensembleImpute = function(data, imputationParameters){
                      modelWeights = modelWeights, ensemble = ensemble,
                      imputationParameters = imputationParameters,
                      returnFormat = imputationParameters$plotImputation)
-#         plotEnsembleOld(data, modelFits, modelWeights, ensemble)
+         ## plotEnsembleOld(data, modelFits, modelWeights, ensemble)
     }
     data.table(
         ensemble = ensemble,
