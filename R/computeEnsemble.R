@@ -32,4 +32,5 @@ computeEnsemble = function(fits, weights, errors){
         fit = apply(weightedFit, 1, function(x) sum(x, na.rm = !all(is.na(x)))),
         variance = apply(errorFit, 1, sum, na.rm = TRUE)
     )
+    ensemble
 }
