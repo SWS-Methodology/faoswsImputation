@@ -1,19 +1,19 @@
 ##' Default Imputation Parameters
-##' 
+##'
 ##' This function can be used to generate the input parameters for the
 ##' ensemble imputation code.  This is a good way to get a list of the required
 ##' parameters and then modify parameters to match your particular
 ##' configuration.
-##' 
+##'
 ##' @param variable Should be one of "production", "yield", "seed", or the
 ##' numeric element code.  These are currently the three variables for which
 ##' this imputation package has been used.  You may also set this to NULL and
 ##' then manually assign values to the variable, imputationValueColumn,
 ##' imputationFlagColumn, and imputationMethodColumn elements of this list.
-##' 
+##'
 ##' @return Returns a list of the default parameters used in the ensemble
 ##' imputation algorithms.
-##' 
+##'
 ##' @details Below is a description of the parameters:
 ##' \itemize{
 ##'   \item yearValue: The column name for the year variable in data.
@@ -50,7 +50,7 @@
 ##'   weights.
 ##'   \item variable: The name of the variable being imputed, either "seed",
 ##'   "yield", or "production".
-##'   \item imputationValueColumn: The column name of the value to be imputed. 
+##'   \item imputationValueColumn: The column name of the value to be imputed.
 ##'   \item imputationFlagColumn: The column name of the observation flag for
 ##'   the imputed variable.
 ##'   \item imputationMethodColumn: The column name of the method flag for the
@@ -69,11 +69,11 @@
 ##'   provided that data is available for some higher hierarchy.  The default,
 ##'   though, is FALSE: one must set this option if it is desired to be used.
 ##' }
-##' 
+##'
 ##' @import faoswsFlag
-##' 
+##'
 ##' @export
-##' 
+##'
 
 defaultImputationParameters = function(variable = NULL){
     out = list(
@@ -84,7 +84,7 @@ defaultImputationParameters = function(variable = NULL){
          maximumWeights = 0.9,
          plotImputation = "faceted",
          errorType = "loocv",
-         errorFunction = function(x) mean(x^2),
+         errorFunction = function(x) mean(x^2, na.rm = TRUE),
          groupCount = 10,
          missingFlag = "M",
          imputationFlag = "I",
@@ -121,12 +121,12 @@ defaultImputationParameters = function(variable = NULL){
     }
     out$newImputationColumn = ""
     out$estimateNoData = FALSE
-    
+
     ## Imputation parameters and data are checked for validity.  However,
     ## after a successful check, a flag is set to prevent future checks.
     ## But, if we are updating the parameters, we should set the flag back
     ## to FALSE so we require a new check:
     ensuredImputationData <<- FALSE
-    
+
     return(out)
 }
