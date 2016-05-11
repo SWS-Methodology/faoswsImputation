@@ -5,7 +5,7 @@
 \usepackage[sc]{mathpazo}
 \usepackage{geometry}
 \geometry{verbose,tmargin=2.5cm,bmargin=2.5cm,lmargin=2.5cm,rmargin=2.5cm}
-\setcounter{secnumdepth}{2} 
+\setcounter{secnumdepth}{2}
 \setcounter{tocdepth}{2}
 \usepackage{breakurl}
 \usepackage{hyperref}
@@ -33,11 +33,11 @@ series data in the Statistical Working System}
 
 \Shorttitle{Ensemble Imputation}
 
-\Abstract{ 
+\Abstract{
 
   This vignette provides a detailed description of the usage of
   functions in the \pkg{faoswsImputation} package. \\
-  
+
 }
 
 \Keywords{Imputation, Linear Mixed Model, Ensemble Learning}
@@ -59,12 +59,12 @@ series data in the Statistical Working System}
 <<setup, include=FALSE, cache=FALSE>>=
 library(knitr)
 opts_chunk$set(fig.path='figure/', fig.align='center', fig.show='hold',
-               warning=FALSE, message=FALSE, error=FALSE, tidy=FALSE, 
+               warning=FALSE, message=FALSE, error=FALSE, tidy=FALSE,
                results='markup', eval=TRUE, echo=TRUE, cache=FALSE, dpi=200,
                concordance=TRUE)
 options(replace.assign=TRUE,width=80)
 assign("depthtrigger", 10, data.table:::.global)
-@ 
+@
 
 \section{Setup}
 
@@ -108,7 +108,7 @@ swsOldFlagTable = faoswsFlagTable
 faoswsFlagTable$flagObservationStatus =
     as.character(faoswsFlagTable$flagObservationStatus)
 swsOldFlagTable
-@ 
+@
 
 
 \section{Functions}
@@ -171,7 +171,7 @@ removeImputation(data = okraProcessed,
                  missingObservationFlag = "M",
                  missingMethodFlag = "u")
 table(okraProcessed$flagObservationStatus_measuredElement_5421)
-@ 
+@
 
 After removing prior imputations, the next step is to replace zero
 values with a missing flag to values of NA. This is an issue from previous
@@ -182,10 +182,11 @@ instead of a value of NA.
 okraProcessed[geographicAreaM49 == 12 & timePointYears >= 2005,
               .(Value_measuredElement_5312,
                 flagObservationStatus_measuredElement_5312)]
-remove0M(data = okraProcessed,
-         value = "Value_measuredElement_5312",
-         flag = "flagObservationStatus_measuredElement_5312",
-         naFlag = "M")
+okraProcessed =
+    remove0M(data = okraProcessed,
+             value = "Value_measuredElement_5312",
+             flag = "flagObservationStatus_measuredElement_5312",
+             missingFlag = "M")
 okraProcessed[geographicAreaM49 == 12 & timePointYears >= 2005,
               .(Value_measuredElement_5312,
                 flagObservationStatus_measuredElement_5312)]
@@ -195,16 +196,19 @@ Note how the zeroes have been changed into NA's above.  Let's do the same for
 production and area harvested:
 
 <<more-remove-zero-values>>=
-remove0M(data = okraProcessed,
-         value = "Value_measuredElement_5421",
-         flag = "flagObservationStatus_measuredElement_5421",
-         naFlag = "M")
 
-remove0M(data = okraProcessed,
-         value = "Value_measuredElement_5510",
-         flag = "flagObservationStatus_measuredElement_5510",
-         naFlag = "M")
-@ 
+okraProcessed =
+    remove0M(data = okraProcessed,
+             value = "Value_measuredElement_5421",
+             flag = "flagObservationStatus_measuredElement_5421",
+             missingFlag = "M")
+
+okraProcessed =
+    remove0M(data = okraProcessed,
+             value = "Value_measuredElement_5510",
+             flag = "flagObservationStatus_measuredElement_5510",
+             missingFlag = "M")
+@
 
 
 In order for the linear mixed model (one of the models in the ensemble that
@@ -223,7 +227,7 @@ removeNoInfo(data = okraProcessed,
 okraProcessed[geographicAreaM49 == 245,
               .(Value_measuredElement_5421,
                 flagObservationStatus_measuredElement_5421)]
-@ 
+@
 
 Note for advanced users: All other remove* functions from the utils package
 perform by modifying the data.table in place (and thus you do not need to
@@ -236,24 +240,24 @@ environment of removeNoInfo).  This should be changed once the \pkg{data.table}
 package adds this functionality.
 
 %' COMMENT BELOW OUT!  DOESN'T WORK WITHOUT faoswsProduction!!!
-%' 
+%'
 %' Next, we must create a list that contains specific parameters on how the
 %' processing should be performed.
-%' 
+%'
 %' <<processingParams>>=
 %' processingParams = defaultProcessingParameters()
 %' processingParams
 %' @
-%' 
+%'
 %' Now, we will pass processingParams through all of the individual processing
 %' functions.  The function \code{processProductionDomain} is a wrapper that
 %' executes all the data processing above.
-%' 
+%'
 %' <<processProductionDomain>>=
 %' okraProcessed = copy(okra)
 %' okraProcessed = processProductionDomain(data = okraProcessed,
 %'                         processingParameters = processingParams)
-%' @ 
+%' @
 
 \subsection{Imputation}
 
@@ -392,7 +396,7 @@ imputationParams$ensembleModels =
 names(imputationParams$ensembleModels)
 imputeVariable(data = okraProcessed,
                imputationParameters = imputationParams)
-@ 
+@
 
 Note: imputations that are interpolations are always present, but some
 extrapolations are not imputed.  The reason for this is that some models are
@@ -416,22 +420,22 @@ examples provided here, those three models all failed to fit to the data, and
 so imputations were not available.
 
 %' COMMENT BELOW OUT!  DOESN'T WORK WITHOUT faoswsProduction!!!
-%' 
+%'
 %' Finally, we can balance the area harvested after both production and
 %' yield have been imputed.
-%' 
+%'
 %' <<balance-area-harvested>>=
 %' balanceAreaHarvested(data = okraProcessed,
 %'                      processingParameters = processingParams)
-%' @ 
-%' 
-%' 
+%' @
+%'
+%'
 %' The full procedure outlined in this section can be performed by a
 %' single function \code{imputeProductionDomain}.  You will need to specify three
 %' parameter lists: the processing parameters (1) and the imputation parameters
 %' for both yield and production (2).
-%' 
-%' 
+%'
+%'
 %' <<one-step-imputation>>=
 %' yieldParams = defaultImputationParameters(5421)
 %' yieldParams$ensembleModels = yieldParams$ensembleModels[1:3]
@@ -439,14 +443,14 @@ so imputations were not available.
 %' productionParams$ensembleModels = productionParams$ensembleModels[1:3]
 %' okraProcessed = okra[geographicAreaM49 <= 55, ]
 %' system.time(
-%'     {        
+%'     {
 %'         imputeProductionDomain(data = okraProcessed,
 %'                                processingParameters = processingParams,
 %'                                yieldImputationParameters = yieldParams,
 %'                                productionImputationParameters =
 %'                                    productionParams)
 %'     })
-%' @ 
+%' @
 
 
 \section{Ensemble model}
@@ -500,8 +504,10 @@ bahrainExample[1:4, .(areaName, timePointYears,
                       production = Value_measuredElement_5510,
                       productionFlag =
                           flagObservationStatus_measuredElement_5510)]
-remove0M(data = bahrainExample, value = "Value_measuredElement_5510",
-         flag = "flagObservationStatus_measuredElement_5510")
+bahrainExample =
+    remove0M(data = bahrainExample,
+             value = "Value_measuredElement_5510",
+             flag = "flagObservationStatus_measuredElement_5510")
 bahrainExample[1:4, .(areaName, timePointYears,
                       production = Value_measuredElement_5510,
                       productionFlag =
@@ -554,7 +560,7 @@ ensemble[is.na(ensemble)] = imputationFit[is.na(ensemble), fit]
 plotEnsemble(data = bahrainExample, modelFits = modelFits,
              modelWeights = modelWeights, ensemble = ensemble,
              imputationParameters = imputationParameters)
-@ 
+@
 
 A one-step wrapper function is also available.  There are also many other
 options you can specify when constructing an ensemble, such as the maximum
@@ -563,11 +569,13 @@ weights.  See defaultImputationParameters for a description of all the options.
 
 <<ensemble-imputation, dpi=100>>=
 bahamasExample = okra[areaName == "Bahamas", ]
-remove0M(data = bahamasExample, value = "Value_measuredElement_5510",
-         flag = "flagObservationStatus_measuredElement_5510")
+bahamasExample =
+    remove0M(data = bahamasExample,
+             value = "Value_measuredElement_5510",
+             flag = "flagObservationStatus_measuredElement_5510")
 ensembleFit = ensembleImpute(data = bahamasExample,
                              imputationParameters = imputationParameters)
-@ 
+@
 
 \section{Models for Ensembling}
 
@@ -605,12 +613,12 @@ imputeVariable(data = exampleData, imputationParameters = imputationParameters)
 
 %' This model often fails, on FAO time-series, and in such cases it is not used in
 %' the final ensemble.  Below is an example of when it succeeds, though:
-%' 
+%'
 %' <<fig.height=3>>=
 %' x = arima.sim(n = 100, model = list(ar = .9))
 %' qplot(1:100, x) + geom_line(aes(y = defaultArima(x)))
 %' @
-%' 
+%'
 %' This example shows one of the common features of the default models: they often
 %' set negative values to 0 (as this is the most reasonable thing to do with most
 %' of the FAO data).  However, there may be variables where negative values are
@@ -743,7 +751,7 @@ imputeVariable(data = exampleData, imputationParameters = imputationParameters)
 %' The below R code implements such a model, and shows how the MARS approach will
 %' fit that data (MARS is named ``earth'' within R because MARS is a proprietary
 %' term).
-%' 
+%'
 %' <<fig.height=3>>=
 %' smallExample = data.table(x = 1:20, y = c(rep(0, 10), 1:10) +
 %'                               rnorm(20, sd = .2))
@@ -787,9 +795,9 @@ to run some analyses with this model:
 mixedModelData = okra[geographicAreaM49 < 100, ]
 # mixedModelData = processProductionDomain(mixedModelData,
 #         processingParameters = defaultProcessingParameters())
-updateMissingFlags = function(data, value, flag, naFlag = "M"){
+updateMissingFlags = function(data, value, flag, missingFlag = "M"){
     missingIndex = which(is.na(data[[value]]))
-    invisible(data[missingIndex, `:=`(c(flag), list(naFlag))])
+    invisible(data[missingIndex, `:=`(c(flag), list(missingFlag))])
 }
 updateMissingFlags(data = mixedModelData, value = "Value_measuredElement_5421",
          flag = "flagObservationStatus_measuredElement_5421")
