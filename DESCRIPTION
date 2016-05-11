@@ -28,7 +28,6 @@ ZipData: no
 VignetteBuilder: knitr
 Suggests:
     faosws,
-    faoswsUtil,
     knitr,
     FAOSTAT,
     lattice
