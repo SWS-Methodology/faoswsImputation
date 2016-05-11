@@ -31,7 +31,6 @@
 ##'
 ##' @export
 ##'
-##' @importFrom splines bs
 ##' @importFrom lme4 lmer
 ##'
 

@@ -9,6 +9,8 @@ Description: This package provides all the functions to perform imputation of
     variables for the FAO production domain.
 URL: https://github.com/SWS-Methodology/faoswsImputation
 License: FAO
+Depends:
+    splines (>= 3.0.2)
 Imports:
     methods,
     lme4 (>= 1.1-7),
@@ -20,7 +22,6 @@ Imports:
     faoswsFlag (>= 0.1.0),
     data.table (>= 1.9.2),
     faoswsUtil (>= 0.1.4),
-    splines (>= 3.0.2),
     ggplot2
 LazyData: yes
 ZipData: no
