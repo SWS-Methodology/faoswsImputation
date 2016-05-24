@@ -29,6 +29,7 @@ library(data.table)
 library(lattice)
 library(splines)
 library(RColorBrewer)
+library(faoswsProcessing)
 
 ## time = 1:1000
 ## myBs = bs(time, df = 20, degree = 10, intercept = TRUE)
@@ -83,20 +84,28 @@ read.example = function(file){
     tmp2[areaHarvestedSymb %in% c("C", "F"), areaHarvestedSymb := "E"]
 
     tmp2[, methodFlag := ifelse(productionSymb == "M", "u", "")]
-    removeImputation(data = tmp2, value = "productionValue",
-                     observationFlag = "productionSymb",
-                     methodFlag = "methodFlag",
-                     imputedFlag = c("E", "T", "F"),
-                     missingObservationFlag = "M")
+    removeImputationEstimation(data = okraProcessed,
+                 valueVar = "productionValue",
+                 observationFlagVar =
+                     "productionSymb",
+                 methodFlagVar = "methodFlag",
+                 missingObservationFlag = "M",
+                 missingMethodFlag = "u",
+                 imputationEstimationObservationFlag = "I",
+                 imputationEstimationMethodFlag = "e")
     tmp2[, methodFlag := ifelse(areaHarvestedSymb == "M", "u", "")]
-    removeImputation(data = tmp2, value = "areaHarvestedValue",
-                     observationFlag = "areaHarvestedSymb",
-                     methodFlag = "methodFlag",
-                     imputedFlag = c("E", "T", "F"),
-                     missingObservationFlag = "M")
-    tmp2 = remove0M(data = tmp2, value = "productionValue",
+    removeImputationEstimation(data = okraProcessed,
+                               valueVar = "areaHarvestedValue",
+                               observationFlagVar =
+                                   "areaHarvestedSymb",
+                               methodFlagVar = "methodFlag",
+                               missingObservationFlag = "M",
+                               missingMethodFlag = "u",
+                               imputationEstimationObservationFlag = "I",
+                               imputationEstimationMethodFlag = "e")
+    tmp2 = remove0M(data = tmp2, valueVars = "productionValue",
                     flag = "productionSymb", missingFlag = "M")
-    tmp2 = remove0M(data = tmp2, value = "areaHarvestedValue",
+    tmp2 = remove0M(data = tmp2, valueVars = "areaHarvestedValue",
                     flag = "areaHarvestedSymb", missingFlag = "M")
     tmp2[, yieldValue :=
          computeRatio(productionValue, areaHarvestedValue)]

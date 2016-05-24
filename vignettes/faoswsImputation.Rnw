@@ -73,6 +73,7 @@ Before we begin, we will need to load the required libraries
 <<loda-library>>=
 ## Load libraries
 library(faoswsImputation)
+library(faoswsProcessing)
 library(faoswsUtil)
 library(faoswsFlag)
 library(data.table)
@@ -104,9 +105,9 @@ package.
 
 %<<create-flagt-table, results='markup'>>=
 <<create-flagt-table>>=
-swsOldFlagTable = faoswsFlagTable
-faoswsFlagTable$flagObservationStatus =
-    as.character(faoswsFlagTable$flagObservationStatus)
+swsOldFlagTable = flagWeightTable
+flagWeightTable$flagObservationStatus =
+    as.character(flagWeightTable$flagObservationStatus)
 swsOldFlagTable
 @
 
@@ -138,38 +139,41 @@ okraProcessed = copy(okra)
 
 ## Removing prior imputation for production
 table(okraProcessed$flagObservationStatus_measuredElement_5510)
-removeImputation(data = okraProcessed,
-                 value = "Value_measuredElement_5510",
-                 observationFlag =
+removeImputationEstimation(data = okraProcessed,
+                 valueVar = "Value_measuredElement_5510",
+                 observationFlagVar =
                      "flagObservationStatus_measuredElement_5510",
-                 methodFlag = "flagMethod_measuredElement_5510",
-                 imputedFlag = "E",
+                 methodFlagVar = "flagMethod_measuredElement_5510",
                  missingObservationFlag = "M",
-                 missingMethodFlag = "u")
+                 missingMethodFlag = "u",
+                 imputationEstimationObservationFlag = "I",
+                 imputationEstimationMethodFlag = "e")
 table(okraProcessed$flagObservationStatus_measuredElement_5510)
 
 ## Removing prior imputation for area harvested
 table(okraProcessed$flagObservationStatus_measuredElement_5312)
-removeImputation(data = okraProcessed,
-                 value = "Value_measuredElement_5312",
-                 observationFlag =
+removeImputationEstimation(data = okraProcessed,
+                 valueVar = "Value_measuredElement_5312",
+                 observationFlagVar =
                      "flagObservationStatus_measuredElement_5312",
-                 methodFlag = "flagMethod_measuredElement_5312",
-                 imputedFlag = "E",
+                 methodFlagVar = "flagMethod_measuredElement_5312",
                  missingObservationFlag = "M",
-                 missingMethodFlag = "u")
+                 missingMethodFlag = "u",
+                 imputationEstimationObservationFlag = "I",
+                 imputationEstimationMethodFlag = "e")
 table(okraProcessed$flagObservationStatus_measuredElement_5312)
 
 ## Removing prior imputation for yield
 table(okraProcessed$flagObservationStatus_measuredElement_5421)
-removeImputation(data = okraProcessed,
-                 value = "Value_measuredElement_5421",
-                 observationFlag =
+removeImputationEstimation(data = okraProcessed,
+                 valueVar = "Value_measuredElement_5421",
+                 observationFlagVar =
                      "flagObservationStatus_measuredElement_5421",
-                 methodFlag = "flagMethod_measuredElement_5421",
-                 imputedFlag = "E",
+                 methodFlagVar = "flagMethod_measuredElement_5421",
                  missingObservationFlag = "M",
-                 missingMethodFlag = "u")
+                 missingMethodFlag = "u",
+                 imputationEstimationObservationFlag = "I",
+                 imputationEstimationMethodFlag = "e")
 table(okraProcessed$flagObservationStatus_measuredElement_5421)
 @
 
@@ -184,7 +188,7 @@ okraProcessed[geographicAreaM49 == 12 & timePointYears >= 2005,
                 flagObservationStatus_measuredElement_5312)]
 okraProcessed =
     remove0M(data = okraProcessed,
-             value = "Value_measuredElement_5312",
+             valueVars = "Value_measuredElement_5312",
              flag = "flagObservationStatus_measuredElement_5312",
              missingFlag = "M")
 okraProcessed[geographicAreaM49 == 12 & timePointYears >= 2005,
@@ -199,13 +203,13 @@ production and area harvested:
 
 okraProcessed =
     remove0M(data = okraProcessed,
-             value = "Value_measuredElement_5421",
+             valueVars = "Value_measuredElement_5421",
              flag = "flagObservationStatus_measuredElement_5421",
              missingFlag = "M")
 
 okraProcessed =
     remove0M(data = okraProcessed,
-             value = "Value_measuredElement_5510",
+             valueVars = "Value_measuredElement_5510",
              flag = "flagObservationStatus_measuredElement_5510",
              missingFlag = "M")
 @
@@ -506,7 +510,7 @@ bahrainExample[1:4, .(areaName, timePointYears,
                           flagObservationStatus_measuredElement_5510)]
 bahrainExample =
     remove0M(data = bahrainExample,
-             value = "Value_measuredElement_5510",
+             valueVars = "Value_measuredElement_5510",
              flag = "flagObservationStatus_measuredElement_5510")
 bahrainExample[1:4, .(areaName, timePointYears,
                       production = Value_measuredElement_5510,
@@ -571,7 +575,7 @@ weights.  See defaultImputationParameters for a description of all the options.
 bahamasExample = okra[areaName == "Bahamas", ]
 bahamasExample =
     remove0M(data = bahamasExample,
-             value = "Value_measuredElement_5510",
+             valueVars = "Value_measuredElement_5510",
              flag = "flagObservationStatus_measuredElement_5510")
 ensembleFit = ensembleImpute(data = bahamasExample,
                              imputationParameters = imputationParameters)
