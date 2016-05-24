@@ -32,6 +32,7 @@
 ##' @export
 ##'
 ##' @importFrom lme4 lmer
+##' @import splines
 ##'
 
 defaultMixedModel = function(data, df = 1, weights = NULL, modelFormula = NULL,
