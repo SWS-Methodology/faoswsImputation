@@ -70,7 +70,7 @@
 ##'   though, is FALSE: one must set this option if it is desired to be used.
 ##' }
 ##'
-##' @import flagWeightTable
+##' @import faoswsFlag
 ##'
 ##' @export
 ##'
