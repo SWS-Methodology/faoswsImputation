@@ -1,7 +1,7 @@
 Package: faoswsImputation
 Type: Package
 Title: Package to perform ensemble imputation for various FAO domains
-Version: 5.0.10
+Version: 5.0.11
 Date: 2016-05-24
 Authors@R: c(person("Joshua M.", "Browning", role = c("aut", "cre"), email = "joshua.browning@fao.org"))
 Maintainer: Joshua M. Browning <joshua.browning@fao.org>
@@ -30,5 +30,6 @@ Suggests:
     faosws,
     knitr,
     FAOSTAT,
-    lattice
+    lattice,
+    faoswsProcessing
 RoxygenNote: 5.0.1
