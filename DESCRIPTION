@@ -19,7 +19,7 @@ Imports:
     forecast (>= 5.5),
     zoo (>= 1.7-11),
     RColorBrewer (>= 1.0-5),
-    faoswsFlag (>= 0.1.0),
+    faoswsFlag (>= 0.2.3),
     data.table (>= 1.9.2),
     faoswsUtil (>= 0.1.4),
     ggplot2
