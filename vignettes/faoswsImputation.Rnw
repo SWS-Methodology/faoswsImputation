@@ -76,7 +76,6 @@ library(faoswsImputation)
 library(faoswsProcessing)
 library(faoswsUtil)
 library(faoswsFlag)
-library(data.table)
 @
 
 To illustrate the functionality of the package, we take the Okra data
@@ -139,41 +138,44 @@ okraProcessed = copy(okra)
 
 ## Removing prior imputation for production
 table(okraProcessed$flagObservationStatus_measuredElement_5510)
-removeImputationEstimation(data = okraProcessed,
-                 valueVar = "Value_measuredElement_5510",
-                 observationFlagVar =
-                     "flagObservationStatus_measuredElement_5510",
-                 methodFlagVar = "flagMethod_measuredElement_5510",
-                 missingObservationFlag = "M",
-                 missingMethodFlag = "u",
-                 imputationEstimationObservationFlag = "I",
-                 imputationEstimationMethodFlag = "e")
+okraProcessed =
+    removeImputationEstimation(data = okraProcessed,
+                               valueVar = "Value_measuredElement_5510",
+                               observationFlagVar =
+                                   "flagObservationStatus_measuredElement_5510",
+                               methodFlagVar = "flagMethod_measuredElement_5510",
+                               missingObservationFlag = "M",
+                               missingMethodFlag = "u",
+                               imputationEstimationObservationFlag = "I",
+                               imputationEstimationMethodFlag = "e")
 table(okraProcessed$flagObservationStatus_measuredElement_5510)
 
 ## Removing prior imputation for area harvested
 table(okraProcessed$flagObservationStatus_measuredElement_5312)
-removeImputationEstimation(data = okraProcessed,
-                 valueVar = "Value_measuredElement_5312",
-                 observationFlagVar =
-                     "flagObservationStatus_measuredElement_5312",
-                 methodFlagVar = "flagMethod_measuredElement_5312",
-                 missingObservationFlag = "M",
-                 missingMethodFlag = "u",
-                 imputationEstimationObservationFlag = "I",
-                 imputationEstimationMethodFlag = "e")
+okraProcessed =
+    removeImputationEstimation(data = okraProcessed,
+                               valueVar = "Value_measuredElement_5312",
+                               observationFlagVar =
+                                   "flagObservationStatus_measuredElement_5312",
+                               methodFlagVar = "flagMethod_measuredElement_5312",
+                               missingObservationFlag = "M",
+                               missingMethodFlag = "u",
+                               imputationEstimationObservationFlag = "I",
+                               imputationEstimationMethodFlag = "e")
 table(okraProcessed$flagObservationStatus_measuredElement_5312)
 
 ## Removing prior imputation for yield
 table(okraProcessed$flagObservationStatus_measuredElement_5421)
-removeImputationEstimation(data = okraProcessed,
-                 valueVar = "Value_measuredElement_5421",
-                 observationFlagVar =
-                     "flagObservationStatus_measuredElement_5421",
-                 methodFlagVar = "flagMethod_measuredElement_5421",
-                 missingObservationFlag = "M",
-                 missingMethodFlag = "u",
-                 imputationEstimationObservationFlag = "I",
-                 imputationEstimationMethodFlag = "e")
+okraProcessed =
+    removeImputationEstimation(data = okraProcessed,
+                               valueVar = "Value_measuredElement_5421",
+                               observationFlagVar =
+                                   "flagObservationStatus_measuredElement_5421",
+                               methodFlagVar = "flagMethod_measuredElement_5421",
+                               missingObservationFlag = "M",
+                               missingMethodFlag = "u",
+                               imputationEstimationObservationFlag = "I",
+                               imputationEstimationMethodFlag = "e")
 table(okraProcessed$flagObservationStatus_measuredElement_5421)
 @
 
