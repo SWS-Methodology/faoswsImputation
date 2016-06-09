@@ -39,7 +39,7 @@ Below is a description of the parameters:
   \item plotImputation: Should the results of the imputation be plotted?
   If no, this argument should be "".  Otherwise, the value is passed to
   plotEnsemble as the returnFormat, see ?plotEnsemble.  The allowable
-  values are "faceted" (the default) or "prompt".  "faceted" will return
+  values are "" (the default) "faceted" or "prompt".  "faceted" will return
   one plot while "prompt" will cycle through all byKey groups of plots.
   \item errorType: Should "raw" errors be used or "loocv" (leave-one-out
   cross-validation)?  In general, "loocv" should be preferred, but "raw" is
