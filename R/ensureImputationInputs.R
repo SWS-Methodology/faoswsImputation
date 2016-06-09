@@ -7,8 +7,6 @@
 ##' @return No value is returned, but errors are thrown if the input parameters
 ##' are not as expected.
 ##'
-##' @importFrom faoswsEnsure ensureObservationFlag
-##'
 ##' @export
 ##'
 
@@ -123,9 +121,6 @@ ensureImputationInputs = function(data, imputationParameters){
         stop("Some observation flags are not in the flag table!  Missing:\n",
              paste0("'", missingFlags, "'", collapse="\n"))
     }
-
-    ## Ensure flags of flagTable are valid
-    stopifnot(ensureObservationFlag(p$flagTable[["flagObservationStatus"]]))
 
     ### Globally assign ensuredImputationData so data will not need to be ensured again
     ensuredImputationData <<- TRUE
