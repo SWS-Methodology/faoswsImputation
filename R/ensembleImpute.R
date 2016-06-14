@@ -62,8 +62,5 @@ ensembleImpute = function(data, imputationParameters){
                      returnFormat = imputationParameters$plotImputation)
          ## plotEnsembleOld(data, modelFits, modelWeights, ensemble)
     }
-    data.table(
-        ensemble = ensemble,
-        variance = ensembleFit$variance
-    )
+    ensemble
 }

@@ -35,7 +35,6 @@ imputeVariable = function(data, imputationParameters){
         newMethodFlagColumn = paste0("flagMethod_",
                                 imputationParameters$newImputationColumn)
     }
-    newVarianceColumn = "ensembleVariance"
 
     ## NOTE (Michael): We impute variables which has only single
     ##                 observation with the only observed
@@ -49,8 +48,7 @@ imputeVariable = function(data, imputationParameters){
     if(!is.null(nrow(ensemble))){
         imputed = which(!is.na(ensemble$ensemble))
         data[imputed,
-             c(newValueColumn, newVarianceColumn) :=
-                 ensemble[imputed, ]]
+             c(newValueColumn) := ensemble[imputed, ]]
     }
 
     imputedIndex = missingIndex & !is.na(data[[newValueColumn]])
