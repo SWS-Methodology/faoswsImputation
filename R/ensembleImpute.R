@@ -63,7 +63,6 @@ ensembleImpute = function(data, imputationParameters){
          ## plotEnsembleOld(data, modelFits, modelWeights, ensemble)
     }
     data.table(
-        ensemble = ensemble,
-        variance = ensembleFit$variance
+        ensemble = ensemble
     )
 }

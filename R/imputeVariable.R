@@ -49,8 +49,7 @@ imputeVariable = function(data, imputationParameters){
     if(!is.null(nrow(ensemble))){
         imputed = which(!is.na(ensemble$ensemble))
         data[imputed,
-             c(newValueColumn, newVarianceColumn) :=
-                 ensemble[imputed, ]]
+             c(newValueColumn) := ensemble[imputed, ]]
     }
 
     imputedIndex = missingIndex & !is.na(data[[newValueColumn]])
