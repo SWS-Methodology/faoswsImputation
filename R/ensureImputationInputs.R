@@ -99,7 +99,6 @@ ensureImputationInputs = function(data, imputationParameters){
                 "problems will some default models ","
                 (exponential, logistic, etc.)!")
     }
-
     ############################# Flag checks #############################
 
     ### Flag Table checks
@@ -117,10 +116,6 @@ ensureImputationInputs = function(data, imputationParameters){
     flags = data[[p$imputationFlagColumn]]
     flags = unique(flags)
     missingFlags = flags[!flags %in% p$flagTable$flagObservationStatus]
-    if(length(missingFlags) > 0){
-        stop("Some observation flags are not in the flag table!  Missing:\n",
-             paste0("'", missingFlags, "'", collapse="\n"))
-    }
 
     ### Globally assign ensuredImputationData so data will not need to be ensured again
     ensuredImputationData <<- TRUE
