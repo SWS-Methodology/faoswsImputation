@@ -10,7 +10,7 @@ defaultMovingAverage(x)
 \item{x}{A numeric vector to be imputed.}
 }
 \description{
-This module is very simple: it uses a mean of the last 3 observed (non-NA) 
+This module is very simple: it uses a mean of the last 3 observed (non-NA)
 values to predict the next value.  If there aren't 3 previous values, the
 number available are used.  If there aren't any previous values, the global
 mean is imputed (imputing NA could cause issues with the ensemble weighting

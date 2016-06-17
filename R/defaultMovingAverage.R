@@ -1,19 +1,19 @@
 ##' The default moving average model.
-##' 
-##' This module is very simple: it uses a mean of the last 3 observed (non-NA) 
+##'
+##' This module is very simple: it uses a mean of the last 3 observed (non-NA)
 ##' values to predict the next value.  If there aren't 3 previous values, the
 ##' number available are used.  If there aren't any previous values, the global
 ##' mean is imputed (imputing NA could cause issues with the ensemble weighting
 ##' process).
-##' 
+##'
 ##' @param x A numeric vector to be imputed.
-##'   
+##'
 ##' @examples
 ##' defaultMovingAverage(x = c(10, 10, 10, NA, 1, NA))
 ##' defaultMovingAverage(x = c(NA, 1:5, NA))
 ##' defaultMovingAverage(x = c(NA, 1, NA, 2, NA, 3, NA, 4, NA, 5, NA))
-##' 
-##' 
+##'
+##'
 ##' @export
 
 defaultMovingAverage = function(x){
@@ -22,7 +22,7 @@ defaultMovingAverage = function(x){
     stopifnot(is.numeric(x))
     stopifnot(length(x) > 1)
     lookback = 3
-    
+
     ## If lookback > number of observations, we can't do a rolling mean
     if(sum(!is.na(x)) < lookback){
         return(rep(NA_real_, length(x)))
@@ -42,5 +42,9 @@ defaultMovingAverage = function(x){
         }
         return(meanEst[usedIndex, "meanEst"])
     })
-    return(fit)
+    ## We round the value to 2 digits as this implementation causes numerical
+    ## error and generates negative values of order 1e-14. See
+    ## https://github.com/SWS-Methodology/faoswsProduction/issues/184 for more
+    ## information.
+    return(round(fit, 10))
 }
