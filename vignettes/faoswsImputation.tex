@@ -469,6 +469,7 @@ of the data (having too many countries can clog up some of the later plots).
 \begin{alltt}
 \hlstd{okraProcessed} \hlkwb{=} \hlstd{okraProcessed[geographicAreaM49} \hlopt{<=} \hlnum{60}\hlstd{, ]}
 \hlstd{imputationParams} \hlkwb{=} \hlkwd{defaultImputationParameters}\hlstd{(}\hlkwc{variable} \hlstd{=} \hlnum{5421}\hlstd{)}
+\hlstd{imputationParams}\hlopt{$}\hlstd{plotImputation} \hlkwb{=} \hlstr{"faceted"}
 \hlkwd{sapply}\hlstd{(imputationParams, class)}
 \end{alltt}
 \begin{verbatim}
@@ -617,9 +618,8 @@ opposed to one model for each unique country-commodity pair).
 ## [13] "flagObservationStatus_measuredElement_5510"
 ## [14] "flagMethod_measuredElement_5510"           
 ## [15] "Value_test"                                
-## [16] "ensembleVariance"                          
-## [17] "flagObservationStatus_test"                
-## [18] "flagMethod_test"
+## [16] "flagObservationStatus_test"                
+## [17] "flagMethod_test"
 \end{verbatim}
 \end{kframe}
 
@@ -748,13 +748,6 @@ this relationship here.
                \hlkwc{imputationParameters} \hlstd{= imputationParams)}
 \end{alltt}
 \end{kframe}
-
-{\centering \includegraphics[width=\maxwidth]{figure/impute-production-1} 
-
-}
-
-
-
 \end{knitrout}
 
 Note: imputations that are interpolations are always present, but some
@@ -956,6 +949,7 @@ Next, we compute the model fits.  We'll print the first three fits:
 \begin{alltt}
 \hlcom{## Compute fit for all component models}
 \hlstd{imputationParameters} \hlkwb{=} \hlkwd{defaultImputationParameters}\hlstd{(}\hlstr{"production"}\hlstd{)}
+\hlstd{imputationParameters}\hlopt{$}\hlstd{plotImputation} \hlkwb{=} \hlstr{"faceted"}
 \hlstd{modelFits} \hlkwb{=} \hlkwd{computeEnsembleFit}\hlstd{(}\hlkwc{data} \hlstd{= bahrainExample,}
                                \hlkwc{imputationParameters} \hlstd{= imputationParameters)}
 \hlstd{modelFits[}\hlnum{1}\hlopt{:}\hlnum{3}\hlstd{]}
@@ -1001,7 +995,7 @@ these exist when observations are real and values are not being imputed.
 \hlstd{cvGroup}
 \end{alltt}
 \begin{verbatim}
-##  [1] NA NA NA NA NA NA NA NA NA NA  3  8 10  4  5  6  1  7  2
+##  [1] NA NA NA NA NA NA NA NA NA NA  6  8  9  4  2  3  7  5 10
 \end{verbatim}
 \begin{alltt}
 \hlstd{modelStats} \hlkwb{=} \hlkwd{computeEnsembleWeight}\hlstd{(}\hlkwc{data} \hlstd{= bahrainExample,}
@@ -1092,6 +1086,7 @@ up a dataset to use for this example, and we'll set
 \begin{alltt}
 \hlstd{exampleData} \hlkwb{=} \hlstd{okra[geographicAreaM49} \hlopt{<} \hlnum{60}\hlstd{, ]}
 \hlstd{imputationParameters} \hlkwb{=} \hlkwd{defaultImputationParameters}\hlstd{(}\hlnum{5421}\hlstd{)}
+\hlstd{imputationParameters}\hlopt{$}\hlstd{plotImputation} \hlkwb{=} \hlstr{"faceted"}
 \hlstd{imputationParameters}\hlopt{$}\hlstd{newImputationColumn} \hlkwb{=} \hlstr{"test"}
 \hlkwd{invisible}\hlstd{(exampleData[timePointYears} \hlopt{%in%} \hlnum{2005}\hlopt{:}\hlnum{2007} \hlopt{&}
                           \hlstd{geographicAreaM49} \hlopt{==} \hlstr{"91"}\hlstd{,}
@@ -1438,13 +1433,6 @@ This example uses the \pkg{lme4} package to fit a mixed model.
 \hlkwd{imputeVariable}\hlstd{(}\hlkwc{data} \hlstd{= mixedModelData,} \hlkwc{imputationParameters} \hlstd{= newParameters)}
 \end{alltt}
 \end{kframe}
-
-{\centering \includegraphics[width=\maxwidth]{figure/unnamed-chunk-20-1} 
-
-}
-
-
-
 \end{knitrout}
 
 For most cases, we see the same results as we did with the linear regression: a
@@ -1482,13 +1470,6 @@ example, we just made up arbitrary regions.
 \hlkwd{imputeVariable}\hlstd{(}\hlkwc{data} \hlstd{= mixedModelData,} \hlkwc{imputationParameters} \hlstd{= newParameters)}
 \end{alltt}
 \end{kframe}
-
-{\centering \includegraphics[width=\maxwidth]{figure/unnamed-chunk-21-1} 
-
-}
-
-
-
 \end{knitrout}
 
 In this complicated example, we can see several different types of imputation

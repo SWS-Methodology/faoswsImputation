@@ -282,6 +282,7 @@ of the data (having too many countries can clog up some of the later plots).
 <<imputationParams>>=
 okraProcessed = okraProcessed[geographicAreaM49 <= 60, ]
 imputationParams = defaultImputationParameters(variable = 5421)
+imputationParams$plotImputation = "faceted"
 sapply(imputationParams, class)
 @
 
@@ -525,6 +526,7 @@ Next, we compute the model fits.  We'll print the first three fits:
 <<>>=
 ## Compute fit for all component models
 imputationParameters = defaultImputationParameters("production")
+imputationParameters$plotImputation = "faceted"
 modelFits = computeEnsembleFit(data = bahrainExample,
                                imputationParameters = imputationParameters)
 modelFits[1:3]
@@ -594,6 +596,7 @@ up a dataset to use for this example, and we'll set
 <<example-dataset>>=
 exampleData = okra[geographicAreaM49 < 60, ]
 imputationParameters = defaultImputationParameters(5421)
+imputationParameters$plotImputation = "faceted"
 imputationParameters$newImputationColumn = "test"
 invisible(exampleData[timePointYears %in% 2005:2007 &
                           geographicAreaM49 == "91",
