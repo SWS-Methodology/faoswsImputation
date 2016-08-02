@@ -17,10 +17,9 @@
 imputeVariable = function(data, imputationParameters){
 
     ### Data Quality Checks
-    if(!exists("ensuredImputationData") || !ensuredImputationData)
+        if(!exists("ensuredImputationData") || !ensuredImputationData)
         ensureImputationInputs(data = data,
-                               imputationParameters = imputationParameters)
-
+                              imputationParameters = imputationParameters)
     ## Define which columns should store the imputation and flags, and create
     ## those columns if they don't currently exist.
     if(imputationParameters$newImputationColumn == ""){
@@ -41,12 +40,27 @@ imputeVariable = function(data, imputationParameters){
     ##                 value. Although not a good practice but
     ##                 explaination is offered in issue 8.
     imputeSingleObservation(data, imputationParameters)
-    missingIndex = is.na(
-        data[, get(imputationParameters$imputationValueColumn)])
+    missingIndex = data[[imputationParameters$imputationFlagColumn]]=="M" & 
+                   data[[imputationParameters$imputationMethodColumn]]=="u"
+    
+    
     ensemble = ensembleImpute(data = data,
                                 imputationParameters = imputationParameters)
     if(!is.null(nrow(ensemble))){
-        imputed = which(!is.na(ensemble$ensemble))
+        
+        
+        
+       
+        
+        data[,flagComb:= paste(   get(imputationParameters$imputationFlagColumn),
+                                  get(imputationParameters$imputationMethodColumn), sep=";" )]
+       
+        NonProtectedFlag = flagValidTableM[Protected == FALSE,]
+        NonProtectedFlag= NonProtectedFlag[, combination := paste(flagObservationStatus, flagMethod, sep = ";")]
+        NonProtectedFlagComb=NonProtectedFlag[,combination]
+        
+        imputed=data$flagComb %in% NonProtectedFlagComb
+        
         data[imputed,
              c(newValueColumn) := ensemble[imputed, ]]
     }
