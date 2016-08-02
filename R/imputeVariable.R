@@ -55,7 +55,7 @@ imputeVariable = function(data, imputationParameters){
         data[,flagComb:= paste(   get(imputationParameters$imputationFlagColumn),
                                   get(imputationParameters$imputationMethodColumn), sep=";" )]
        
-        NonProtectedFlag = flagValidTableM[Protected == FALSE,]
+        NonProtectedFlag = flagValidTable[Protected == FALSE,]
         NonProtectedFlag= NonProtectedFlag[, combination := paste(flagObservationStatus, flagMethod, sep = ";")]
         NonProtectedFlagComb=NonProtectedFlag[,combination]
         
