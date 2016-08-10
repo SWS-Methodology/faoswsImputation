@@ -18,18 +18,39 @@ imputeSingleObservation = function(data, imputationParameters){
     data[, `:=`("obsCount",
                     sum(!is.na(.SD[[param$imputationValueColumn]]))),
              by = c(param$byKey)]
-    data[obsCount == 1,
+    
+    ##'extraction of non protected rows that can be overwritten (both values and flags)
+    data[,flagComb:= paste(   get(imputationParameters$imputationFlagColumn),
+                              get(imputationParameters$imputationMethodColumn), sep=";" )]
+    NonProtectedFlag = flagValidTable[Protected == FALSE,]
+    NonProtectedFlag= NonProtectedFlag[, combination := paste(flagObservationStatus, flagMethod, sep = ";")]
+    NonProtectedFlagComb=NonProtectedFlag[,combination]
+    imputed=data$flagComb %in% NonProtectedFlagComb
+    data=data[,flagComb:=NULL]
+    
+    data[(obsCount == 1 & imputed),
              `:=`(c(param$imputationValueColumn,
                   param$imputationFlagColumn,
                   param$imputationMethodColumn),
+                  
+                  
                   list(as.numeric(na.omit(.SD[[param$imputationValueColumn]])),
+                       
                        replace(.SD[[param$imputationFlagColumn]],
                                which(.SD[[param$imputationFlagColumn]] ==
-                                     param$missingFlag), param$imputationFlag),
+                                     param$missingFlag & .SD[[param$imputationFlagColumn]] != "-" ),
+                                     param$imputationFlag),
+                       
                        replace(.SD[[param$imputationMethodColumn]],
                                which(.SD[[param$imputationFlagColumn]] ==
-                                     param$missingFlag), param$newMethodFlag))),
+                                     param$missingFlag & .SD[[param$imputationFlagColumn]] != "-"),
+                                     param$newMethodFlag))),
+         
              by = c(param$byKey)]
+
+    
     data[, `:=`(obsCount, NULL)]
+
+    
     data
 }

@@ -39,18 +39,19 @@ imputeVariable = function(data, imputationParameters){
     ##                 observation with the only observed
     ##                 value. Although not a good practice but
     ##                 explaination is offered in issue 8.
-    imputeSingleObservation(data, imputationParameters)
+   
+  
+   imputeSingleObservation(data, imputationParameters)
+    
     missingIndex = data[[imputationParameters$imputationFlagColumn]]=="M" & 
                    data[[imputationParameters$imputationMethodColumn]]=="u"
     
     
     ensemble = ensembleImpute(data = data,
                                 imputationParameters = imputationParameters)
+    
     if(!is.null(nrow(ensemble))){
-        
-        
-        
-       
+      
         
         data[,flagComb:= paste(   get(imputationParameters$imputationFlagColumn),
                                   get(imputationParameters$imputationMethodColumn), sep=";" )]
@@ -60,11 +61,15 @@ imputeVariable = function(data, imputationParameters){
         NonProtectedFlagComb=NonProtectedFlag[,combination]
         
         imputed=data$flagComb %in% NonProtectedFlagComb
-        
+       
         data[imputed,
              c(newValueColumn) := ensemble[imputed, ]]
+        
+        data=data[,flagComb:=NULL]
+        
     }
-
+    
+   
     imputedIndex = missingIndex & !is.na(data[[newValueColumn]])
     invisible(data[imputedIndex,
                    c(newObsFlagColumn, newMethodFlagColumn) :=
