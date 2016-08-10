@@ -19,7 +19,8 @@ imputeSingleObservation = function(data, imputationParameters){
                     sum(!is.na(.SD[[param$imputationValueColumn]]))),
              by = c(param$byKey)]
     
-    ##'extraction of non protected rows that can be overwritten (both values and flags)
+ 
+    
     data[,flagComb:= paste(   get(imputationParameters$imputationFlagColumn),
                               get(imputationParameters$imputationMethodColumn), sep=";" )]
     NonProtectedFlag = flagValidTable[Protected == FALSE,]
