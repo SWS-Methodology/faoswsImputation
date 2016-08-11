@@ -20,12 +20,14 @@ ensembleImpute = function(data, imputationParameters){
         data[[imputationParameters$imputationValueColumn]])
     flagMissingIndex = (data[[imputationParameters$imputationFlagColumn]] ==
                             imputationParameters$missingFlag)
+    
     # Ensure missing values agree with missing flags
     if(!all(valueMissingIndex == flagMissingIndex)){
         cat("Values that are NA: ", sum(valueMissingIndex), "\n")
         cat("Flags with missingFlag value: ", sum(flagMissingIndex), "\n")
         stop("Different missing values from flags/values!  Maybe call remove0M?")
     }
+    
     if(is.null(names(imputationParameters$ensembleModels)))
         names(imputationParameters$ensembleModels) = paste(
             "Model", 1:length(imputationParameters$ensembleModels), sep = "_")

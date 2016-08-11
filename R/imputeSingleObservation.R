@@ -39,19 +39,25 @@ imputeSingleObservation = function(data, imputationParameters){
                        
                        replace(.SD[[param$imputationFlagColumn]],
                                which(.SD[[param$imputationFlagColumn]] ==
-                                     param$missingFlag & .SD[[param$imputationFlagColumn]] != "-" ),
-                                     param$imputationFlag),
+                                       param$missingFlag & .SD[[param$imputationMethodColumn]] != "-" ),
+                               param$imputationFlag),
                        
                        replace(.SD[[param$imputationMethodColumn]],
                                which(.SD[[param$imputationFlagColumn]] ==
-                                     param$missingFlag & .SD[[param$imputationFlagColumn]] != "-"),
-                                     param$newMethodFlag))),
+                                       param$missingFlag & .SD[[param$imputationMethodColumn]] != "-"),
+                               param$newMethodFlag))),
+         
          
              by = c(param$byKey)]
-
     
-    data[, `:=`(obsCount, NULL)]
-
+    data[(is.na(get(param$imputationValueColumn)) & obsCount==1),
+         `:=`( param$imputationFlagColumn, "M")]
     
+    data[(is.na(get(param$imputationValueColumn)) & obsCount==1),
+         `:=`( param$imputationMethodColumn, "-")]
+    
+    
+
     data
+    
 }
