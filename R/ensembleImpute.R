@@ -58,11 +58,14 @@ ensembleImpute = function(data, imputationParameters){
                                   errors = modelErrors)
     ensemble[missIndex] = ensembleFit[missIndex, fit]
     if(imputationParameters$plotImputation != ""){
-        plotEnsemble(data = data, modelFits = modelFits,
+        pl <- plotEnsemble(data = data, modelFits = modelFits,
                      modelWeights = modelWeights, ensemble = ensemble,
                      imputationParameters = imputationParameters,
                      returnFormat = imputationParameters$plotImputation)
          ## plotEnsembleOld(data, modelFits, modelWeights, ensemble)
+        pdf("Rplot%03d.pdf")
+        lapply(pl, print)
+        dev.off()
     }
 
     data.table(
