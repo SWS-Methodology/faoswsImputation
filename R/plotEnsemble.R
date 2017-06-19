@@ -174,7 +174,8 @@ plotEnsemble = function(data, modelFits, modelWeights, ensemble,
                      size = "Model Weight", color = "", shape = "", fill = "") +
                 scale_shape_manual(values = c(16, 4, rep(NA, nModels)),
                                    limits=c("Data", "Ensemble", modelNames)) +
-                expand_limits(y = 0)
+                expand_limits(y = 0)+
+                ggtitle(unique(toPlotModelsList[[i]][,geographicAreaM49])) 
         })
     }
     if(returnFormat == "individual")
