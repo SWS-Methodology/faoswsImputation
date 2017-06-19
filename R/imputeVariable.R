@@ -5,6 +5,7 @@
 ##' @param data The data.table object containing the data.
 ##' @param imputationParameters A list of the parameters for the imputation
 ##'   algorithms.  See defaultImputationParameters() for a starting point.
+
 ##'
 ##' @return This function doesn't return any objects but modifies the underlying
 ##'   data.table that it was passed.
@@ -21,7 +22,7 @@ imputeVariable = function(data, imputationParameters){
         ensureImputationInputs(data = data,
                               imputationParameters = imputationParameters)
     ## Define which columns should store the imputation and flags, and create
-    ## those columns if they don't currently exist.
+  ## those columns if they don't currently exist.
     if(imputationParameters$newImputationColumn == ""){
         newValueColumn = imputationParameters$imputationValueColumn
         newObsFlagColumn = imputationParameters$imputationFlagColumn
@@ -51,23 +52,18 @@ imputeVariable = function(data, imputationParameters){
                                 imputationParameters = imputationParameters)
     
     if(!is.null(nrow(ensemble))){
+        
       
+        data=cbind(data, ensemble)
         
-        data[,flagComb:= paste(   get(imputationParameters$imputationFlagColumn),
-                                  get(imputationParameters$imputationMethodColumn), sep=";" )]
-       
-        NonProtectedFlag = flagValidTable[Protected == FALSE,]
-        NonProtectedFlag= NonProtectedFlag[, combination := paste(flagObservationStatus, flagMethod, sep = ";")]
-        NonProtectedFlagComb=NonProtectedFlag[,combination]
+        data[missingIndex & !is.na(ensemble),
+             c(newValueColumn) := ensemble]
+ 
+        data=data[,ensemble:=NULL]
         
-        imputed=data$flagComb %in% NonProtectedFlagComb
-       
-        data[imputed,
-             c(newValueColumn) := ensemble[imputed, ]]
         
-        data=data[,flagComb:=NULL]
         
-    }
+    } 
     
    
     imputedIndex = missingIndex & !is.na(data[[newValueColumn]])
@@ -75,4 +71,6 @@ imputeVariable = function(data, imputationParameters){
                    c(newObsFlagColumn, newMethodFlagColumn) :=
                        list(imputationParameters$imputationFlag,
                             imputationParameters$newMethodFlag)])
+    
+    
 }
