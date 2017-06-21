@@ -1,10 +1,11 @@
 Package: faoswsImputation
 Type: Package
 Title: Package to perform ensemble imputation for various FAO domains
-Version: 5.0.19
+Version: 5.0.20
 Date: 2016-08-11
 Authors@R: c(person("Joshua M.", "Browning", role = "aut", email = "joshua.browning@fao.org"),
-             person("Michael C. J.", "Kao", role = "cre", email = "michael.kao@fao.org"))
+             person("Michael C. J.", "Kao", role = "aut", email = "michael.kao@fao.org"),
+             person("Francesca Rosa", role = "cre", email = "francesca.rosa@fao.org"))
 Description: This package provides all the functions to perform imputation of
     variables for the FAO production domain.
 URL: https://github.com/SWS-Methodology/faoswsImputation
