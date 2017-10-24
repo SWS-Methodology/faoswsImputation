@@ -1,7 +1,5 @@
-##' Make Cross-Validation Groups
-##'
-##' Creates a vector of cross-validation groups to be used for leave-one-out
-##' cross-validation in later models.
+##' This function imputes series where just one protected value is available. Please note that
+##' also (M,-) flag combination is protected. 
 ##'
 ##' @param data A data.table object containing the data.
 ##' @param imputationParameters A list of the parameters for the imputation
@@ -13,51 +11,55 @@
 ##' @export
 ##'
 
-imputeSingleObservation = function(data, imputationParameters){
-    param = imputationParameters
-    data[, `:=`("obsCount",
-                    sum(!is.na(.SD[[param$imputationValueColumn]]))),
-             by = c(param$byKey)]
-    
- 
-    
-    data[,flagComb:= paste(   get(imputationParameters$imputationFlagColumn),
-                              get(imputationParameters$imputationMethodColumn), sep=";" )]
-    NonProtectedFlag = flagValidTable[Protected == FALSE,]
-    NonProtectedFlag= NonProtectedFlag[, combination := paste(flagObservationStatus, flagMethod, sep = ";")]
-    NonProtectedFlagComb=NonProtectedFlag[,combination]
-    imputed=data$flagComb %in% NonProtectedFlagComb
-    data=data[,flagComb:=NULL]
-    
-    data[(obsCount == 1 & imputed),
-             `:=`(c(param$imputationValueColumn,
-                  param$imputationFlagColumn,
-                  param$imputationMethodColumn),
-                  
-                  
-                  list(as.numeric(na.omit(.SD[[param$imputationValueColumn]])),
-                       
-                       replace(.SD[[param$imputationFlagColumn]],
-                               which(.SD[[param$imputationFlagColumn]] ==
-                                       param$missingFlag & .SD[[param$imputationMethodColumn]] != "-" ),
-                               param$imputationFlag),
-                       
-                       replace(.SD[[param$imputationMethodColumn]],
-                               which(.SD[[param$imputationFlagColumn]] ==
-                                       param$missingFlag & .SD[[param$imputationMethodColumn]] != "-"),
-                               param$newMethodFlag))),
-         
-         
-             by = c(param$byKey)]
-    
-    data[(is.na(get(param$imputationValueColumn)) & obsCount==1),
-         `:=`( param$imputationFlagColumn, "M")]
-    
-    data[(is.na(get(param$imputationValueColumn)) & obsCount==1),
-         `:=`( param$imputationMethodColumn, "-")]
-    
-    
 
-    data
-    
+
+
+
+imputeSingleObservation = function(data, imputationParameters){
+  param = imputationParameters
+  data[, `:=`("obsCount",
+              sum(!is.na(.SD[[param$imputationValueColumn]]))),
+       by = c(param$byKey)]
+  
+  
+  
+  data[,flagComb:= paste(   get(imputationParameters$imputationFlagColumn),
+                            get(imputationParameters$imputationMethodColumn), sep=";" )]
+  NonProtectedFlag = flagValidTable[Protected == FALSE,]
+  NonProtectedFlag= NonProtectedFlag[, combination := paste(flagObservationStatus, flagMethod, sep = ";")]
+  NonProtectedFlagComb=NonProtectedFlag[,combination]
+  imputed=data$flagComb %in% NonProtectedFlagComb
+  data=data[,flagComb:=NULL]
+  
+  data[(obsCount == 1 & imputed),
+       `:=`(c(param$imputationValueColumn,
+              param$imputationFlagColumn,
+              param$imputationMethodColumn),
+            
+            
+            list(as.numeric(na.omit(.SD[[param$imputationValueColumn]])),
+                 
+                 replace(.SD[[param$imputationFlagColumn]],
+                         which(.SD[[param$imputationFlagColumn]] ==
+                                 param$missingFlag & .SD[[param$imputationMethodColumn]] != "-" ),
+                         param$imputationFlag),
+                 
+                 replace(.SD[[param$imputationMethodColumn]],
+                         which(.SD[[param$imputationFlagColumn]] ==
+                                 param$missingFlag & .SD[[param$imputationMethodColumn]] != "-"),
+                         param$newMethodFlag))),
+       
+       
+       by = c(param$byKey)]
+  
+  data[(is.na(get(param$imputationValueColumn)) & obsCount==1),
+       `:=`( param$imputationFlagColumn, "M")]
+  
+  data[(is.na(get(param$imputationValueColumn)) & obsCount==1),
+       `:=`( param$imputationMethodColumn, "-")]
+  
+  
+  
+  data
+  
 }

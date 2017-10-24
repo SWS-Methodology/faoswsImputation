@@ -42,7 +42,7 @@ imputeVariable = function(data, imputationParameters){
     ##                 explaination is offered in issue 8.
    
   
-   imputeSingleObservation(data, imputationParameters)
+    imputeSingleObservation(data, imputationParameters)
     
     missingIndex = data[[imputationParameters$imputationFlagColumn]]=="M" & 
                    data[[imputationParameters$imputationMethodColumn]]=="u"
