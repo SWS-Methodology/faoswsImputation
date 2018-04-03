@@ -48,7 +48,7 @@ plotEnsemble = function(data, modelFits, modelWeights, ensemble,
     stopifnot(names(modelWeights) %in% names(modelFits))
     stopifnot(names(modelFits) %in% names(modelWeights))
     stopifnot(nrow(data) == length(ensemble))
-    stopifnot(returnFormat %in% c("faceted", "individual", "prompt"))
+    stopifnot(returnFormat %in% c("faceted", "individual", "prompt", "pdf"))
     
     ## Set up toPlot data.table (holds data for ggplot call)
     ## We'll be modifying data, so take a copy to avoid unwanted changes
@@ -139,7 +139,40 @@ plotEnsemble = function(data, modelFits, modelWeights, ensemble,
                   expand_limits(y = 0)
         )
         return()
-    } else {
+    }
+    if(returnFormat == "pdf"){
+   toPlot=ggplot(toPlotModels,
+                   # year - .5 to center the lines on each year
+                   aes(x = year, color = variable, shape = variable)) +
+              geom_ribbon(aes(ymax = modelFit + ribbonWidth,
+                              ymin = modelFit - ribbonWidth,
+                              shape = "none", fill = variable)) +
+              geom_point(data = toPlot, aes(x = year, y = ensemble,
+                                            color = imputedObservation,
+                                            shape = imputedObservation,
+                                            fill = imputedObservation)) +
+              facet_wrap(as.formula(paste("~", paste(imputationParameters$byKey,
+                                                     collapse = "+"))), scales = "free") +
+              scale_size_continuous(range = c(.5, 2)) +
+              scale_color_manual(values = c("black", "black", plotColors),
+                                 limits = c("Data", "Ensemble", modelNames)) +
+              scale_fill_manual(values = c(NA, NA, plotColors),
+                                limits = c("Data", "Ensemble", modelNames)) +
+              labs(x = "Year", y = imputationParameters$imputationValueColumn,
+                   size = "Model Weight", color = "", shape = "", fill = "") +
+              scale_shape_manual(values = c(16, 4, rep(NA, nModels)),
+                                 limits=c("Data", "Ensemble", modelNames)) +
+              expand_limits(y = 0)
+   dir.create(paste0(getwd(),"/plotEnsemble"))   
+   pdf(paste0(getwd(),"/plotEnsemble/ensemble.pdf"))
+      print(toPlot)
+      dev.off()
+      
+      
+    } 
+    
+    
+    else {
         toPlotList = by(data = toPlot,
                         INDICES = toPlot[, imputationParameters$byKey,
                                           with = FALSE],
@@ -165,6 +198,7 @@ plotEnsemble = function(data, modelFits, modelWeights, ensemble,
                                fill = ifelse(is.na(
                                    imputationValueColumn),
                                    "Ensemble", "Data"))) +
+                geom_line(data = toPlotList[[i]],eas(x = year, y = imputedObservation))+
                 scale_size_continuous(range = c(.5, 2)) +
                 scale_color_manual(values = c("black", "black", plotColors),
                                    limits = c("Data", "Ensemble", modelNames)) +
@@ -185,4 +219,7 @@ plotEnsemble = function(data, modelFits, modelWeights, ensemble,
             print(plotList[[i]])
             readline("Next?")
         }
-}
+
+ 
+    
+    }
